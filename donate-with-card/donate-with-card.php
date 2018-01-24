@@ -74,6 +74,23 @@ add_option("donate_with_card_db_version","0.0.1");
 
 
 function dwc_dml(){
+    /*
+    INSERT INTO `wp_donation-types` (`id`, `name`, `label`, `default_price`, `ord`) VALUES
+(1, 'Hayat Kurtarınca Güzel', 'Hayat Kurtarınca Güzel', '115.00', NULL),
+(2, 'Genel Bağış', 'Genel Bağış', NULL, NULL),
+(3, 'Zekat', 'Zekat', NULL, NULL),
+(4, 'Suriye Krizi', 'Suriye Krizi', NULL, NULL),
+(5, 'Yemen Krizi', 'Yemen Krizi', NULL, NULL),
+(6, 'Arakan Krizi', 'Arakan Krizi', NULL, NULL),
+(7, 'Tedavi Programları', 'Tedavi Programları', NULL, NULL),
+(8, 'Koruyucu Sağlık Programları', 'Koruyucu Sağlık Programları', NULL, NULL),
+(9, 'Sağlık Eğitimleri', 'Sağlık Eğitimleri', NULL, NULL),
+(10, 'Gözlerini Aç!', 'Gözlerini Aç!', '300.00', NULL),
+(11, 'Açlıktan Ölüyorum! Gerçekten...', 'Açlıktan Ölüyorum! Gerçekten...', '145.00', NULL),
+(12, 'Bizim İçin Su Onlar İçin Hayat', 'Bizim İçin Su Onlar İçin Hayat', NULL, NULL),
+(13, 'Kurban Olsun Sağlık Olsun', 'Kurban Olsun Sağlık Olsun', '430.00', NULL);*/
+
+
 }
 
 function dwc_deactivate(){
@@ -93,6 +110,9 @@ register_activation_hook(__FILE__,"dwc_dml");
 register_deactivation_hook(__FILE__,"dwc_deactivate");
 // register_uninstall_hook(__FILE__,"dwc_uninstall");
 register_deactivation_hook(__FILE__,"dwc_uninstall");
+
+
+
 
 
 
@@ -200,4 +220,15 @@ public function handle_form() {
 }
 
 new DonateWithCard();
+
+
+// MENU STRUCTURE
+// DonateWithCard
+//    - Donations
+//    - Options
+//         - Donation Types
+//         - VPos Settings
+//         - Misc
+//
+
 ?>
