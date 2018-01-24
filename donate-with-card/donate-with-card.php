@@ -16,7 +16,7 @@
 /**
 Inserts necessary db tables upon activation
 */
-function dbTableInsertion(){
+function dwc_ddl(){
    global $wpdb;
    $donationTypesTableSql=null;
    $donationsTableSql=null;
@@ -71,22 +71,16 @@ add_option("donate_with_card_db_version","0.0.1");
 }
 
 
-
-function initialDonationTypeAdding(){
-   register_deactivation_hook(__FILE__,'deactivateTest');
+function dwc_dml(){
 }
 
-function deactivateTest(){
-   require_once(ABSPATH .'wp-admin/includes/upgrade.php');
-   $donationTypesTableName=$wpdb->prefix . 'donation-types';
-   $donationsTableName=$wpdb->prefix . 'donations';
-   $donationItemsTableName=$wpdb->prefix . 'donation-items';  
-   $wpdb->query( "DROP TABLE IF EXISTS $donationTypesTableName" );
-   $wpdb->query( "DROP TABLE IF EXISTS $donationsTableName" );
-   $wpdb->query( "DROP TABLE IF EXISTS $donationItemsTableName" );
-   delete_option( 'donate_with_card_db_version' );
+function dwv_deactivate(){
+
 }
 
-register_activation_hook(__FILE__,"dbTableInsertion");
-register_activation_hook(__FILE__,"initialDonationTypeAdding");
+
+register_activation_hook(__FILE__,"dwc_ddl");
+register_activation_hook(__FILE__,"dwc_dml");
+register_deactivation_hook(__FILE__,"dwv_deactivate");
+
 ?>
