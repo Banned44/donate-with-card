@@ -9,8 +9,10 @@
    License: GPL3
    */
 
-
-
+// Exit if accessed direcly.
+   if(!defined('ABSPATH')){
+      exit;
+   }
 
 
 /**
@@ -91,4 +93,111 @@ register_activation_hook(__FILE__,"dwc_dml");
 register_deactivation_hook(__FILE__,"dwc_deactivate");
 // register_uninstall_hook(__FILE__,"dwc_uninstall");
 register_deactivation_hook(__FILE__,"dwc_uninstall");
+
+
+
+// function wpdocs_register_my_custom_menu_page() {
+// // add_menu_page('My Custom Page', 'My Custom Page', 'manage_options', 'my-top-level-slug');
+// // add_submenu_page( 'my-top-level-slug', 'My Custom Page', 'My Custom Page','manage_options', 'my-top-level-slug');
+// // add_submenu_page( 'my-top-level-slug', 'My Custom Submenu Page', 'My Custom Submenu Page',    'manage_options', 'my-secondary-slug');
+
+//     add_submenu_page(
+//         'tools.php',
+//         'My Custom Submenu Pagwasdasde',
+//         'Donate With Card Options',
+//         'manage_options',
+//         'my-custom-submenu-page',
+//         'wpdocs_my_custom_submenu_page_callback' );
+// }
+// function wpdocs_my_custom_submenu_page_callback() {
+//     echo '<div class="wrap"><div id="icon-tools" class="icon32"></div>';
+//         echo '<h2>My Custom Submenu Page</h2>';
+//     echo '</div>';
+// }
+// add_action( 'admin_menu', 'wpdocs_register_my_custom_menu_page' );
+
+class DonateWithCard{
+
+   public function addAdminPage(){
+    // Add the menu item and page
+    $page_title = 'My Awesome Settings Page';
+    $menu_title = 'Awesome Plugin';
+    $capability = 'manage_options';
+    $slug = 'smashing_fields';
+    $callback = array( $this, 'plugin_settings_page_content' );
+    $icon = 'dashicons-admin-plugins';
+    $position = 100;
+    add_menu_page( $page_title, $menu_title, $capability, $slug, $callback, $icon, $position );
+
+    add_submenu_page( 'options-general.php', $page_title, $menu_title, $capability, $slug, $callback );
+ }
+
+
+ public function __construct() {
+    // Hook into the admin menu
+  add_action( 'admin_menu', array( $this, 'addAdminPage' ) );
+}
+
+public function plugin_settings_page_content(){
+   // echo 'Hello World!';
+  if( $_POST['updated'] === 'true' ){
+    $this->handle_form();
+ }
+ ?>
+ <div class="wrap">
+    <h2>My Awesome Settings Page</h2>
+    <form method="POST">
+       <input type="hidden" name="updated" value="true" />
+       <?php wp_nonce_field( 'awesome_update', 'awesome_form' ); ?>
+       <table class="form-table">
+        <tbody>
+          <tr>
+            <th><label for="username">Username</label></th>
+            <td><input name="username" id="username" type="text" value="<?php echo get_option('awesome_username'); ?>" class="regular-text" /></td>
+         </tr>
+         <tr>
+            <th><label for="email">Email Address</label></th>
+            <td><input name="email" id="email" type="text" value="<?php echo get_option('awesome_email'); ?>" class="regular-text" /></td>
+         </tr>
+      </tbody>
+   </table>
+   <p class="submit">
+     <input type="submit" name="submit" id="submit" class="button button-primary" value="Check My Info!">
+  </p>
+</form>
+</div> <?php
+}
+
+public function handle_form() {
+ if(
+  ! isset( $_POST['awesome_form'] ) ||
+  ! wp_verify_nonce( $_POST['awesome_form'], 'awesome_update' )
+  ){ ?>
+  <div class="error">
+     <p>Sorry, your nonce was not correct. Please try again.</p>
+     </div> <?php
+     exit;
+  } else {
+     $valid_usernames = array( 'admin', 'matthew' );
+     $valid_emails = array( 'email@domain.com', 'anotheremail@domain.com' );
+
+     $username = sanitize_text_field( $_POST['username'] );
+     $email = sanitize_email( $_POST['email'] );
+
+     if( in_array( $username, $valid_usernames ) && in_array( $email, $valid_emails ) ){
+        update_option( 'awesome_username', $username );
+        update_option( 'awesome_email', $email );?>
+        <div class="updated">
+          <p>Your fields were saved!</p>
+          </div> <?php
+       } else { ?>
+       <div class="error">
+          <p>Your username or email were invalid.</p>
+          </div> <?php
+       }
+    }
+ }
+}
+
+new DonateWithCard();
 ?>
