@@ -74,13 +74,21 @@ add_option("donate_with_card_db_version","0.0.1");
 function dwc_dml(){
 }
 
-function dwv_deactivate(){
+function dwc_deactivate(){
 
 }
 
+function dwc_uninstall(){
+   global $wpdb;
+   $wpdb->query("DROP TABLE IF EXISTS $donationTypesTableName;");
+   $wpdb->query("DROP TABLE IF EXISTS $donationsTableName;");
+   $wpdb->query("DROP TABLE IF EXISTS $donationItemsTableName;");
+   delete_option( 'donate_with_card_db_version' );
+}
 
 register_activation_hook(__FILE__,"dwc_ddl");
 register_activation_hook(__FILE__,"dwc_dml");
-register_deactivation_hook(__FILE__,"dwv_deactivate");
-
+register_deactivation_hook(__FILE__,"dwc_deactivate");
+// register_uninstall_hook(__FILE__,"dwc_uninstall");
+register_deactivation_hook(__FILE__,"dwc_uninstall");
 ?>
