@@ -11,9 +11,7 @@
 
 
 
-   $donationTypesTableName=$wpdb->prefix . 'donation-types';
-   $donationsTableName=$wpdb->prefix . 'donations';
-   $donationItemsTableName=$wpdb->prefix . 'donation-items';
+
 
 /**
 Inserts necessary db tables upon activation
@@ -23,8 +21,9 @@ function dbTableInsertion(){
    $donationTypesTableSql=null;
    $donationsTableSql=null;
    $donationItemsTableSql=null;
-   global $donationTypesTableName,$donationsTableName,$donationItemsTableName;
-
+   $donationTypesTableName=$wpdb->prefix . 'donation-types';
+   $donationsTableName=$wpdb->prefix . 'donations';
+   $donationItemsTableName=$wpdb->prefix . 'donation-items';
 
    require_once(ABSPATH .'wp-admin/includes/upgrade.php');
 
@@ -68,21 +67,26 @@ dbDelta($donationItemsTableSql);
 }
 
 add_option("donate_with_card_db_version","0.0.1");
+
 }
 
 
 
-function initialDonationTypeAdding(){}
+function initialDonationTypeAdding(){
+   register_deactivation_hook(__FILE__,'deactivateTest');
+}
 
-function uninstall(){
+function deactivateTest(){
    require_once(ABSPATH .'wp-admin/includes/upgrade.php');
-   global $donationTypesTableName,$donationsTableName,$donationItemsTableName;
-   dbDelta("DROP TABLE IF EXISTS `$donationTypesTableName`;");
-   dbDelta("DROP TABLE IF EXISTS `$donationsTableName`;");
-   dbDelta("DROP TABLE IF EXISTS `$donationItemsTableName`;");
+   $donationTypesTableName=$wpdb->prefix . 'donation-types';
+   $donationsTableName=$wpdb->prefix . 'donations';
+   $donationItemsTableName=$wpdb->prefix . 'donation-items';  
+   $wpdb->query( "DROP TABLE IF EXISTS $donationTypesTableName" );
+   $wpdb->query( "DROP TABLE IF EXISTS $donationsTableName" );
+   $wpdb->query( "DROP TABLE IF EXISTS $donationItemsTableName" );
+   delete_option( 'donate_with_card_db_version' );
 }
 
 register_activation_hook(__FILE__,"dbTableInsertion");
 register_activation_hook(__FILE__,"initialDonationTypeAdding");
-register_deactivation_hook(__FILE__,'uninstall');
 ?>
