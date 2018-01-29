@@ -2,9 +2,9 @@
 /**
  * Donation types admin page
  */
-if (!defined(ABSPATH)) {
-    exit;
-}
+//if (!defined(ABSPATH)) {
+//    exit;
+//}
 
 // Add Settings menu
 // Display donation type list
@@ -12,7 +12,6 @@ if (!defined(ABSPATH)) {
 // Add Edit Delete Operations
 class DWC_Donation_Types
 {
-
     private $tableName;
 
     /**
@@ -35,6 +34,7 @@ class DWC_Donation_Types
                     return $this->dwc_display_edit_form();
                     break;
                 case 'delete':
+                    return $this->dwc_show_delete_form();
 
                     break;
                 case 'add':
@@ -85,7 +85,7 @@ class DWC_Donation_Types
             <?php
             foreach ($result as $v) {
                 $v['default_price'] = empty($v['default_price']) ? "-" : $v['default_price'];
-                echo "<tr><td>{$v['id']}</td><td>{$v['name']}</td><td>{$v['label']}</td><td>{$v['default_price']}</td><td><a href='options-general.php?page=dwc_setting_donation_types&action=edit&id={$v['id']}'><span class='dashicons dashicons-edit'></span></a><a href='options-general.php?page=dwc_setting_donation_types&action=delete&id={$v['id']}'><span class='dashicons dashicons-trash'></span></a></td>";
+                echo "<tr><td>{$v['id']}</td><td>{$v['name']}</td><td>{$v['label']}</td><td>{$v['default_price']}</td><td><a href='options-general.php?page=dwc_setting_donation_types&action=edit&id={$v['id']}'><span class='dashicons dashicons-edit'></span></a> <a href='options-general.php?page=dwc_setting_donation_types&action=delete&id={$v['id']}'><span class='dashicons dashicons-trash'></span></a></td>";
             }
             ?>
             </tbody>
@@ -103,7 +103,7 @@ class DWC_Donation_Types
                         null,
                         null,
                         null,
-                        {"width": "15px"}
+                        {"width": "30px"}
                     ]
                 });
             });
@@ -111,26 +111,56 @@ class DWC_Donation_Types
         <?php
     }
 
-    public function dwc_display_edit_form()
+    private function getById()
     {
         global $wpdb;
         $id = (int)$_GET['id'];
         $query = $wpdb->prepare("SELECT * FROM `{$this->tableName}` WHERE id=%d", $id);
-        $resultData = $wpdb->get_row($query, ARRAY_A);
+        return $wpdb->get_row($query, ARRAY_A);
+    }
+
+    public function dwc_display_edit_form()
+    {
+        $resultData = $this->getById();
         if (empty($resultData)) {
-            ?>
-            <div class="wrap">
-                <div class="error"><p>ERROR!</p></div>
-                Donation type not found! <a
-                        href="<?php echo admin_url('options-general.php?page=dwc_setting_donation_types') ?>">&laquo;
-                    Back to the list.</a>
-            </div>
-            <?php
+            $title = "ERROR!";
+            $message = <<<HTML
+Donation type not found! <a href="options-general.php?page=dwc_setting_donation_types">&laquo; Back to the list.</a>
+HTML;
+            return $this->dwc_show_error_page($title, $message);
         } else {
 
             var_dump($resultData);
         }
     }
+
+    private function dwc_show_error_page($title, $message)
+    {
+        echo <<<HTML
+<div class="wrap"><div class="error"><p>$title</p></div>$message</div>
+HTML;
+    }
+
+    public function dwc_show_delete_form()
+    {
+        $resultData = $this->getById();
+        ?>
+        <div class="wrap">
+            <form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
+                <p>
+                    Are you sure you want to delete donation type <strong>#<?php echo $resultData['id']; ?>
+                        - <?php echo $resultData['name']; ?></strong>
+                </p>
+                <input type="hidden" name="id" value="<?php echo $resultData['id']; ?>"/>
+                <input type='submit' name="delete" value='Delete' class='button'>
+                <p>
+                    <a href="options-general.php?page=dwc_setting_donation_types">&laquo; Back to the list.</a>
+                </p>
+            </form>
+        </div>
+        <?php
+    }
+
 }
 
 new DWC_Donation_Types();
