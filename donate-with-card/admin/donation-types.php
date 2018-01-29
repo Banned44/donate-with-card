@@ -31,9 +31,19 @@ class DWC_Donation_Types
         if (!empty($action)) {
             switch ($action) {
                 case 'edit':
-                    return $this->dwc_display_edit_form();
+
+                    $resultData = $this->getById();
+                    if (empty($resultData)) {
+                        $title = "ERROR!";
+                        $message = "Donation type not found!";
+                        return $this->dwc_show_error_page($title, $message);
+                    } else {
+                        return $this->showEditForm($resultData);
+                    }
+
                     break;
                 case 'delete':
+
                     return $this->dwc_show_delete_form();
 
                     break;
@@ -119,29 +129,14 @@ class DWC_Donation_Types
         return $wpdb->get_row($query, ARRAY_A);
     }
 
-    public function dwc_display_edit_form()
-    {
-        $resultData = $this->getById();
-        if (empty($resultData)) {
-            $title = "ERROR!";
-            $message = <<<HTML
-Donation type not found! <a href="options-general.php?page=dwc_setting_donation_types">&laquo; Back to the list.</a>
-HTML;
-            return $this->dwc_show_error_page($title, $message);
-        } else {
-
-            var_dump($resultData);
-        }
-    }
-
     private function dwc_show_error_page($title, $message)
     {
         echo <<<HTML
-<div class="wrap"><div class="error"><p>$title</p></div>$message</div>
+<div class="wrap"><div class="notice notice-error"><p>$title</p><p>$message<br/><a href="options-general.php?page=dwc_setting_donation_types">&laquo; Back to the list.</a></p></div></div>
 HTML;
     }
 
-    public function dwc_show_delete_form()
+    private function dwc_show_delete_form()
     {
         $resultData = $this->getById();
         ?>
@@ -161,6 +156,67 @@ HTML;
         <?php
     }
 
+    private function showEditForm($donationTypeData)
+    {
+        if (!$this->doEditOperation()) {
+            ?>
+            <div id="wrap">
+                <h2>Edit Donation Type #<?php echo $donationTypeData['id']; ?>
+                    - <?php echo $donationTypeData['name']; ?></h2>
+                <form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
+                    <table class='wp-list-table widefat fixed'>
+                        <tr>
+                            <th>Unique name</th>
+                            <td><input type="text" name="name" value="<?php echo $donationTypeData['name']; ?>"/></td>
+                        </tr>
+                        <tr>
+                            <th>Label</th>
+                            <td><input type="text" name="label" value="<?php echo $donationTypeData['label']; ?>"/></td>
+                        </tr>
+                        <tr>
+                            <th>Default Price</th>
+                            <td><input type="text" name="default_price"
+                                       value="<?php echo $donationTypeData['default_price']; ?>"/></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <input type='hidden' name="id" value="<?php echo $donationTypeData['id']; ?>">
+                                <input type='submit' name="update" value='Save' class='button'>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <?php
+        }
+    }
+
+    private function doEditOperation()
+    {
+        global $wpdb;
+        if (isset($_POST['update']) && $_POST['update'] == 'Save' && $_POST['id'] == $_GET['id']) {
+            $result = $wpdb->update(
+                $this->tableName, //table
+                array('name' => $_POST['name'], 'label' => $_POST['label'], "default_price" => $_POST['default_price']), //data
+                array('ID' => $_POST['id']), //where
+                array('%s'), //data format
+                array('%d') //where format
+            );
+
+            if ($result > 0) {
+                echo <<<HTML
+<div class="wrap"><div class="notice notice-success"><p>SUCCESS</p><p>Donation type successfully saved!<br/><a href="options-general.php?page=dwc_setting_donation_types">&laquo; Back to the list.</a></p></div></div>
+HTML;
+
+            } else if ($result == 0) {
+                echo <<<HTML
+<div class="wrap"><div class="notice notice-warning"><p>Warning</p><p>No changes detected!<br/><a href="options-general.php?page=dwc_setting_donation_types">&laquo; Back to the list.</a></p></div></div>
+HTML;
+            }
+            return true;
+        }
+        return false;
+    }
 }
 
 new DWC_Donation_Types();
