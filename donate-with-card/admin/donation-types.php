@@ -31,7 +31,6 @@ class DWC_Donation_Types
         if (!empty($action)) {
             switch ($action) {
                 case 'edit':
-
                     $resultData = $this->getById();
                     if (empty($resultData)) {
                         $title = "ERROR!";
@@ -43,12 +42,17 @@ class DWC_Donation_Types
 
                     break;
                 case 'delete':
-
-                    return $this->dwc_show_delete_form();
-
+                    $resultData = $this->getById();
+                    if (empty($resultData)) {
+                        $title = "ERROR!";
+                        $message = "Donation type not found!";
+                        return $this->dwc_show_error_page($title, $message);
+                    } else {
+                        return $this->dwc_show_delete_form($resultData);
+                    }
                     break;
                 case 'add':
-
+                    return $this->showAddForm();
                     break;
                 default:
                     break;
@@ -81,6 +85,10 @@ class DWC_Donation_Types
 
 
         <h2>Donation Types</h2>
+        <p>
+            <a href='options-general.php?page=dwc_setting_donation_types&action=add'><span
+                        class='dashicons dashicons-plus-alt'></span> Add New Donation Type</a>
+        </p>
         <table id="example" class="display" cellspacing="0" width="100%">
             <thead>
             <tr>
@@ -136,24 +144,45 @@ class DWC_Donation_Types
 HTML;
     }
 
-    private function dwc_show_delete_form()
+    private function dwc_show_delete_form($resultData)
     {
-        $resultData = $this->getById();
-        ?>
-        <div class="wrap">
-            <form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
-                <p>
-                    Are you sure you want to delete donation type <strong>#<?php echo $resultData['id']; ?>
-                        - <?php echo $resultData['name']; ?></strong>
-                </p>
-                <input type="hidden" name="id" value="<?php echo $resultData['id']; ?>"/>
-                <input type='submit' name="delete" value='Delete' class='button'>
-                <p>
-                    <a href="options-general.php?page=dwc_setting_donation_types">&laquo; Back to the list.</a>
-                </p>
-            </form>
-        </div>
-        <?php
+        if (!$this->doDeleteOperation()) {
+            ?>
+            <div class="wrap">
+                <form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
+                    <p>
+                        Are you sure you want to delete donation type <strong>#<?php echo $resultData['id']; ?>
+                            - <?php echo $resultData['name']; ?></strong>
+                    </p>
+                    <input type="hidden" name="id" value="<?php echo $resultData['id']; ?>"/>
+                    <input type='submit' name="delete" value='Delete' class='button'>
+                    <p>
+                        <a href="options-general.php?page=dwc_setting_donation_types">&laquo; Back to the list.</a>
+                    </p>
+                </form>
+            </div>
+            <?php
+        }
+    }
+
+    private function doDeleteOperation()
+    {
+        global $wpdb;
+        if (isset($_POST['delete']) && $_POST['delete'] == 'Delete' && $_POST['id'] == $_GET['id']) {
+            $result = $wpdb->delete($this->tableName, array('ID' => $_POST['id']), array("%d"));
+            if (is_int($result) && $result > 0) {
+                echo <<<HTML
+<div class="wrap"><div class="notice notice-success"><p>SUCCESS</p><p>($result) Donation type successfully deleted!<br/><a href="options-general.php?page=dwc_setting_donation_types">&laquo; Back to the list.</a></p></div></div>
+HTML;
+            } else if (!$result) {
+                echo <<<HTML
+<div class="wrap"><div class="notice notice-warning"><p>Warning</p><p>Error deleting donation type!<br/><a href="options-general.php?page=dwc_setting_donation_types">&laquo; Back to the list.</a></p></div></div>
+HTML;
+            }
+            return true;
+        }
+        return false;
+
     }
 
     private function showEditForm($donationTypeData)
@@ -211,6 +240,64 @@ HTML;
             } else if ($result == 0) {
                 echo <<<HTML
 <div class="wrap"><div class="notice notice-warning"><p>Warning</p><p>No changes detected!<br/><a href="options-general.php?page=dwc_setting_donation_types">&laquo; Back to the list.</a></p></div></div>
+HTML;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private function showAddForm()
+    {
+        if (!$this->doAddOperation()) {
+            ?>
+            <div id="wrap">
+                <h2>Add Donation Type</h2>
+                <form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
+                    <table class='wp-list-table widefat fixed'>
+                        <tr>
+                            <th>Unique name</th>
+                            <td><input type="text" name="name" value="<?php echo $donationTypeData['name']; ?>"/></td>
+                        </tr>
+                        <tr>
+                            <th>Label</th>
+                            <td><input type="text" name="label" value="<?php echo $donationTypeData['label']; ?>"/></td>
+                        </tr>
+                        <tr>
+                            <th>Default Price</th>
+                            <td><input type="text" name="default_price"
+                                       value="<?php echo $donationTypeData['default_price']; ?>"/></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <input type='submit' name="add" value='Save' class='button'>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <?php
+        }
+    }
+
+    private function doAddOperation()
+    {
+        global $wpdb;
+        if (isset($_POST['add']) && $_POST['add'] == 'Save') {
+            $result = $wpdb->insert(
+                $this->tableName, //table
+                array('name' => $_POST['name'], 'label' => $_POST['label'], "default_price" => $_POST['default_price']), //data
+                array('%s'), //data format
+                array('%d') //where format
+            );
+
+            if (is_int($result) && $result > 0) {
+                echo <<<HTML
+<div class="wrap"><div class="notice notice-success"><p>SUCCESS</p><p>Donation type successfully saved!<br/><a href="options-general.php?page=dwc_setting_donation_types">&laquo; Back to the list.</a></p></div></div>
+HTML;
+            } else if (!$result) {
+                echo <<<HTML
+<div class="wrap"><div class="notice notice-error"><p>ERROR!</p><p>Error inserting data!<br/><a href="options-general.php?page=dwc_setting_donation_types">&laquo; Back to the list.</a></p></div></div>
 HTML;
             }
             return true;
