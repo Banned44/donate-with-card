@@ -23,6 +23,7 @@ class DWC_Donation_Types
         $this->tableName = $wpdb->prefix . "donation-types";
         // Insert a menu into settings page.
         add_action('admin_menu', array($this, 'dwc_add_options_submenu'));
+        add_action('admin_init', array($this, 'dwc_donation_types_main_page_add_styles'));
     }
 
     public function dwc_donation_types_controller()
@@ -77,12 +78,9 @@ class DWC_Donation_Types
         global $wpdb;
         $sql = "SELECT * FROM `" . $wpdb->prefix . "donation-types` " . "ORDER BY ord ASC";
         $result = $wpdb->get_results($sql, ARRAY_A);
+        wp_enqueue_style('datatables-css');
+        wp_enqueue_script('datatables-js');
         ?>
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" type="text/css"
-              media="all"/>
-        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-        <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-
 
         <h2>Donation Types</h2>
         <p>
@@ -110,8 +108,9 @@ class DWC_Donation_Types
         </table>
 
         <script>
-            $(document).ready(function () {
-                $('#example').DataTable({
+            jQuery.noConflict();
+            jQuery(document).ready(function () {
+                jQuery('#example').DataTable({
                     responsive: {
                         details: false
                     },
@@ -128,6 +127,13 @@ class DWC_Donation_Types
         </script>
         <?php
     }
+
+    public function dwc_donation_types_main_page_add_styles()
+    {
+        wp_register_style('datatables-css', "//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css");
+        wp_register_script('datatables-js', '//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js');
+    }
+
 
     private function getById()
     {
