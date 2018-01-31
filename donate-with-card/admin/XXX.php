@@ -29,7 +29,7 @@ class XXX
             if (self::isEligibleForMethodCall($realMethodName)) {
                 call_user_func_array(array($this, $realMethodName), $arguments);
             } else {
-                exit("Method `$name` not found!");
+                exit("Method `$name` is not eligible for public call!");
             }
         } else {
             exit("Method `$name` not found!");
