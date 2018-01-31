@@ -10,11 +10,26 @@ class XXX
 {
     const PREFIX = 'dwc_';
 
-    public function __construct()
+
+    public function menu_operations()
     {
 
     }
 
+    public function style_script_reg_operations()
+    {
+
+    }
+
+    public function page_controller()
+    {
+
+    }
+
+    public function __construct()
+    {
+
+    }
 
     /**
      * Instead of putting prefixes for every method name that needs for wordpress, this method strips prefix,
