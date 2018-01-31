@@ -1,12 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: yg
- * Date: 1/31/18
- * Time: 10:58 AM
- */
 
-class XXX
+/**
+ * Base class for admin page operations.
+ * Class PluginPagesBase
+ */
+class PluginBase
 {
     const PREFIX = 'dwc_';
 
