@@ -25,7 +25,7 @@ class XXX
     public function __call($name, $arguments)
     {
         if (strpos($name, self::PREFIX) === 0) {
-            $realMethodName = substr($name, 4);
+            $realMethodName = substr($name, strlen(self::PREFIX));
             if (self::isEligibleForMethodCall($realMethodName)) {
                 call_user_func_array(array($this, $realMethodName), $arguments);
             } else {
