@@ -291,4 +291,54 @@ function dwcDonationTypesDisplay()
 //         - Misc
 //
 
+
+function my_plugin_load_plugin_textdomain()
+{
+    load_plugin_textdomain( 'dwc-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+}
+
+add_action('plugins_loaded', 'my_plugin_load_plugin_textdomain');
+
+
+
+
+
+
+
+
+
+
+
+function my_registration_form($params, $content = null) {
+
+    extract(shortcode_atts(array(
+        'type' => 'style1'
+    ), $params));
+    ob_start();
+    ?>
+    <form>
+        <ul>
+            <li>
+                <label>Name</label>
+                <input name="name" type="text" id="name">
+            </li>
+            <li>
+                <label>Register Number</label>
+                <input name="register_num" type="text" id="reg_num">
+            </li>
+            <li>
+                <label>Address</label>
+                <input name="address" type="text" id="address">
+            </li>
+
+            <li>
+                <input type="submit" value="Save">
+            </li>
+        </ul>
+    </form>
+    <?php return ob_get_clean();
+}
+add_shortcode('my_form','my_registration_form');
+
+
 ?>
