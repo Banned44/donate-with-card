@@ -7,6 +7,8 @@ Version: 0.0.1
 Author: Kambaa
 Author URI: http://kambaa.tk
 License: GPL3
+Text Domain: dwc-plugin
+Domain Path: /languages/
 */
 
 // Exit if accessed direcly.
