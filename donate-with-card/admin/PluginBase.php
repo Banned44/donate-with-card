@@ -24,11 +24,6 @@ class PluginBase
 
     }
 
-    public function __construct()
-    {
-
-    }
-
     /**
      * Instead of putting prefixes for every method name that needs for wordpress, this method strips prefix,
      * searches in public methods and if there's one, calls the method.
@@ -74,15 +69,5 @@ class PluginBase
             return $result;
         }
     }
-
-
-    public function anan($name)
-    {
-        echo 'senin ben ' . $name;
-    }
-
 }
 
-
-$x = new XXX();
-$x->dwc_anan("wasd");
