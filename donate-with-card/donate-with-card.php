@@ -303,6 +303,22 @@ add_action('plugins_loaded', 'my_plugin_load_plugin_textdomain');
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function my_registration_form($params, $content = null)
 {
     global $wpdb;
@@ -320,16 +336,19 @@ function my_registration_form($params, $content = null)
     <script src="//local/cardjs/jquery.card.js"></script>
     <h3>Bağış Seçiniz</h3>
     <form>
-        <select id="donation_types">
+        <select id="donation_types" style="width:75%;float:left;">
             <option value="-1">Bağış Türü Seçiniz</option>
         </select>
-        <input id="donation_amount" type="number" minlength="0" min="0"/>
-        <input type="button" id="addToCart" value="Kutuya Ekle"/>
+        <input id="donation_amount" type="number" minlength="0" min="0" style="margin-left:2%;width:23%;float:left;"/>
+        <input type="button" id="addToCart" value="Kutuya Ekle" style="clear:both;margin-top:12px;"/>
     </form>
     <h3>Bağış Kutusu</h3>
-    <ul id="donationCart">
-
-    </ul>
+    <div id="cartContainer" style="padding-left: 20px;">
+        <ul id="donationCart">
+            <hr>
+            <li>Toplam <span style="float:right;">0 TL</span></li>
+        </ul>
+    </div>
     <h3>Bilgileriniz</h3>
     <form id="donation_infos" method="post" action="">
 
@@ -453,11 +472,31 @@ function my_registration_form($params, $content = null)
             function displayCart() {
                 $('#donationCart').html('');
                 for (var i in donationCart) {
-                    $('#donationCart').append('<li>' + donationCart[i]['label'] + '<span style="float:right;">' + parseFloat(donationCart[i]['price']).toFixed(2) + ' TL</span></li>');
+                    $('#donationCart').append('<li>' + donationCart[i]['label'] + '<a style="font-size: 12px;cursor: pointer;box-shadow: none;color: red;padding-left: 8px;" class="removeFromCart" data-id="' + i + '">( Sil )</a><span style="float:right;">' + parseFloat(donationCart[i]['price']).toFixed(2) + ' TL</span></li>');
                 }
                 $('#donationCart').append('<hr/>');
                 $('#donationCart').append('<li>Toplam<span style="float:right;">' + calculateCartTotal().toFixed(2) + '</span></li>');
+                registerDeleteLinks();
+            }
 
+            function registerDeleteLinks() {
+                $('a.removeFromCart').off('click').click(function (e) {
+                    var id = parseInt($(this).data('id'));
+                    if (id > -1) {
+                        deleteDonationFromCart(id);
+                    }
+                });
+            }
+
+            function deleteDonationFromCart(id) {
+                for (var i in donationCart) {
+                    if (parseInt(id) === parseInt(i)) {
+                        donationCart.splice(i, 1);
+                        console.log(donationCart);
+                        break;
+                    }
+                }
+                displayCart();
             }
 
             // add donation types to option
@@ -470,7 +509,6 @@ function my_registration_form($params, $content = null)
                 if ('' != id) {
 
                     var selectedDt = getDonationType(id);
-                    console.log(selectedDt);
                     if (null != selectedDt['default_price']) {
                         $('#donation_amount').val(selectedDt['default_price']);
                         $('#donation_amount').attr('disabled', true);
@@ -479,9 +517,7 @@ function my_registration_form($params, $content = null)
                         $('#donation_amount').attr('disabled', false);
                     }
                     var temp = $('#dt' + id).data('default');
-                    console.log("default:" + temp);
                 }
-
             });
 
             $('#addToCart').click(function (e) {
@@ -493,6 +529,7 @@ function my_registration_form($params, $content = null)
                 }
                 addToCart(id);
             });
+
 
             $('form#donation_infos').card({
                 form: 'form#donation_infos',
