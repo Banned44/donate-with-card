@@ -303,42 +303,223 @@ add_action('plugins_loaded', 'my_plugin_load_plugin_textdomain');
 
 
 
-
-
-
-
-
-
-function my_registration_form($params, $content = null) {
+function my_registration_form($params, $content = null)
+{
+    global $wpdb;
+    $query = "SELECT * FROM `{$wpdb->prefix}donation-types` ";
+    $donationTypes = $wpdb->get_results($query, ARRAY_A);
 
     extract(shortcode_atts(array(
         'type' => 'style1'
     ), $params));
+
     ob_start();
     ?>
+    <link rel="stylesheet" type="text/css" href="//local/cardjs/card.css">
+    <script src="//local/cardjs/card.js"></script>
+    <script src="//local/cardjs/jquery.card.js"></script>
+    <h3>Bağış Seçiniz</h3>
     <form>
-        <ul>
-            <li>
-                <label>Name</label>
-                <input name="name" type="text" id="name">
-            </li>
-            <li>
-                <label>Register Number</label>
-                <input name="register_num" type="text" id="reg_num">
-            </li>
-            <li>
-                <label>Address</label>
-                <input name="address" type="text" id="address">
-            </li>
-
-            <li>
-                <input type="submit" value="Save">
-            </li>
-        </ul>
+        <select id="donation_types">
+            <option value="-1">Bağış Türü Seçiniz</option>
+        </select>
+        <input id="donation_amount" type="number" minlength="0" min="0"/>
+        <input type="button" id="addToCart" value="Kutuya Ekle"/>
     </form>
+    <h3>Bağış Kutusu</h3>
+    <ul id="donationCart">
+
+    </ul>
+    <h3>Bilgileriniz</h3>
+    <form id="donation_infos" method="post" action="">
+
+        <label for="">Adınız Soyadınız
+            <input type="text" name="name"/>
+        </label>
+
+        <label for="">Telefon Numaranız
+            <input type="tel" name="tel"/>
+        </label>
+
+        <label for="">E-Posta Adresiniz
+            <input type="email" name="email"/>
+        </label>
+
+        <label for="">T.C. Kimlik Numaranız
+            <input type="text" name="tckn"/>
+        </label>
+
+        <label for="">Bağış Notunuz
+            <textarea name="donation_notes" rows="5" cols="30"></textarea>
+        </label>
+
+        <div class='card-wrapper'></div>
+
+        <input type="text" id="cardholder_name" name="name" placeholder="Kart sahibi adı"
+               style="width:50%;float:left;"/>
+        <input type="text" id="card_number" name="number" placeholder="Kart no" style="width:50%;float:left;">
+        <div style="clear:both;"></div>
+        <div style="width:50%;float:left;">
+            <select name="month" style="width:50%;float:left;">
+                <option value="">Ay Seçiniz</option>
+                <option value="01">Ocak</option>
+                <option value="02">Şubat</option>
+                <option value="03">Mart</option>
+                <option value="04">Nisan</option>
+                <option value="05">Mayıs</option>
+                <option value="06">Haziran</option>
+                <option value="07">Temmuz</option>
+                <option value="08">Ağustos</option>
+                <option value="09">Eylül</option>
+                <option value="10">Ekim</option>
+                <option value="11">Kasım</option>
+                <option value="12">Aralık</option>
+            </select>
+            <select name="year" style="width:50%;float:left;">
+                <option value="">Yıl Seçiniz</option>
+                <option>2018</option>
+                <option>2019</option>
+                <option>2020</option>
+                <option>2021</option>
+                <option>2022</option>
+                <option>2023</option>
+                <option>2024</option>
+                <option>2025</option>
+                <option>2026</option>
+                <option>2027</option>
+                <option>2028</option>
+                <option>2029</option>
+                <option>2030</option>
+            </select>
+        </div>
+        <div style="width:50%;float:left;">
+            <input type="text" id="card_cvc" name="cvc" placeholder="CVC Kodu"/>
+        </div>
+        <div style="clear:both;"></div>
+        <input type="submit" name="donation" value="Bağış Yapın"/>
+    </form>
+    <script>
+        $ = jQuery;
+
+        $(function () {
+
+            var dt =<?php echo json_encode($donationTypes);?>;
+
+            var donationCart = [];
+
+            function getDonationType(id) {
+                for (var i in dt) {
+                    if (dt[i]['id'] == id) {
+                        return dt[i];
+                    }
+                }
+                return false;
+            }
+
+            function resetDonationTypeFields() {
+                $('#donation_types').prop('selectedIndex', 0);
+                $('#donation_amount').val("").attr("disabled", false);
+            }
+
+            function calculateCartTotal() {
+                var total = 0;
+                for (var i in donationCart) {
+                    var price = null == donationCart[i]['price'] ? parseFloat(donationCart[i]['default_price']) : parseFloat(donationCart[i]['price']);
+                    total += price;
+                }
+                return total;
+            }
+
+            function addToCart(id) {
+                if (id != '') {
+                    var data = getDonationType(id);
+                    if (null == data['default_price']) {
+                        var customAmount = $('#donation_amount').val();
+                        if (parseFloat(customAmount) > 0) {
+                            data['price'] = parseFloat(customAmount).toFixed(2);
+                        } else {
+                            alert("Lütfen bir bağış miktarı giriniz.");
+                            return;
+                        }
+                    } else {
+                        data['price'] = data['default_price'];
+                    }
+                    donationCart.push(data);
+                    resetDonationTypeFields();
+                    displayCart();
+                }
+            }
+
+            function displayCart() {
+                $('#donationCart').html('');
+                for (var i in donationCart) {
+                    $('#donationCart').append('<li>' + donationCart[i]['label'] + '<span style="float:right;">' + parseFloat(donationCart[i]['price']).toFixed(2) + ' TL</span></li>');
+                }
+                $('#donationCart').append('<hr/>');
+                $('#donationCart').append('<li>Toplam<span style="float:right;">' + calculateCartTotal().toFixed(2) + '</span></li>');
+
+            }
+
+            // add donation types to option
+            for (var i in dt) {
+                $('#donation_types').append('<option value="' + dt[i]['id'] + '">' + dt[i]['label'] + '</option>');
+            }
+
+            $('#donation_types').change(function (e) {
+                var id = $(this).val();
+                if ('' != id) {
+
+                    var selectedDt = getDonationType(id);
+                    console.log(selectedDt);
+                    if (null != selectedDt['default_price']) {
+                        $('#donation_amount').val(selectedDt['default_price']);
+                        $('#donation_amount').attr('disabled', true);
+                    } else {
+                        $('#donation_amount').val(null);
+                        $('#donation_amount').attr('disabled', false);
+                    }
+                    var temp = $('#dt' + id).data('default');
+                    console.log("default:" + temp);
+                }
+
+            });
+
+            $('#addToCart').click(function (e) {
+                var id = parseInt($('#donation_types').val());
+
+                if (null == id || id < 1) {
+                    alert("Lütfen bir bağış tipi seçiniz.");
+                    return;
+                }
+                addToCart(id);
+            });
+
+            $('form#donation_infos').card({
+                form: 'form#donation_infos',
+                placeholders: {
+                    number: '1234 5678 9012 3456',
+                    name: 'ADINIZ SOYADINIZ',
+                    expiry: '01/2018',
+                    cvc: '123'
+                },
+                formSelectors: {
+                    numberInput: 'input#card_number',
+                    expiryInput: 'input#card_expiry',
+                    cvcInput: 'input#card_cvc',
+                    nameInput: 'input#cardholder_name'
+                },
+                container: '.card-wrapper'
+            });
+
+
+        });
+
+    </script>
+
     <?php return ob_get_clean();
 }
-add_shortcode('my_form','my_registration_form');
+
+add_shortcode('my_form', 'my_registration_form');
 
 
 ?>
