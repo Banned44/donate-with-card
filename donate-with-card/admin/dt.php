@@ -39,7 +39,7 @@ class Dt extends PluginBase
 
     public function page_controller()
     {
-        $action = $_GET['action'];
+        $action = @$_GET['action'];
         if (!empty($action)) {
             switch ($action) {
                 case 'edit':
@@ -67,7 +67,7 @@ class Dt extends PluginBase
                 case 'edit':
                     $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
                     $label = filter_var($_POST['label'], FILTER_SANITIZE_STRING);
-                    $defaultPrice = !empty($defaultPrice) ? floatval(filter_var($_POST['default_price'], FILTER_SANITIZE_STRING)) : null;
+                    $defaultPrice = !empty($_POST['default_price']) ? str_replace(",", ".", filter_var($_POST['default_price'], FILTER_SANITIZE_STRING)) : null;
                     if ($postAction == "add") {
                         $this->add($name, $label, $defaultPrice);
                     } else {
@@ -96,7 +96,7 @@ class Dt extends PluginBase
         $result = $this->db->insert(
             $this->tableName, //table
             array('name' => $name, 'label' => $label, "default_price" => $defaultPrice), //data
-            array('%s'), //data format
+            array('%s', '%s', '%f'), //data format
             array('%d') //where format
         );
 
@@ -115,9 +115,9 @@ class Dt extends PluginBase
     {
         $result = $this->db->update(
             $this->tableName, //table
-            array('name' => $name, 'label' => $label, "default_price" => $defaultPrice), //data
+            array('name' => $name, 'label' => $label, "default_price" => (float)$defaultPrice), //data
             array('ID' => $id), //where
-            array('%s'), //data format
+            array('%s', '%s', '%f'), //data format
             array('%d') //where format
         );
         if (is_int($result) && $result > 0) {
@@ -202,8 +202,9 @@ class Dt extends PluginBase
                     </tr>
                     <tr>
                         <th><?php _e("Default Price", 'dwc-plugin'); ?></th>
-                        <td><input type="text" name="default_price"
-                                   value="<?php echo $editData['default_price']; ?>"/></td>
+                        <td><input type="number" min="0" step="0.01" pattern="^\d+(?:\.\d{1,2})?$" onblur="
+this.parentNode.parentNode.style.backgroundColor=/^\d+(?:\.\d{1,2})?$/.test(this.value)?'inherit':'red'"
+                                   name="default_price" value="<?php echo $editData['default_price']; ?>"/></td>
                     </tr>
                     <tr>
                         <td colspan="2">
@@ -259,7 +260,8 @@ class Dt extends PluginBase
                     </tr>
                     <tr>
                         <th><?php _e("Default Price", 'dwc-plugin'); ?></th>
-                        <td><input type="text" name="default_price" value=""/></td>
+                        <td><input type="text" name="default_price" pattern="^\d+(?:\.\d{1,2})?$" onblur="
+this.parentNode.parentNode.style.backgroundColor=/^\d+(?:\.\d{1,2})?$/.test(this.value)?'inherit':'red'"/></td>
                     </tr>
                     <tr>
                         <td colspan="2">
