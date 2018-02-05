@@ -269,6 +269,34 @@ function my_registration_form($params, $content = null)
                 return total;
             }
 
+            var the_ajax_script = {"ajaxurl": "http://yg.com/wp/wp-admin/admin-ajax.php"};
+
+            function addToSession(itemData) {
+                var url = the_ajax_script.ajaxurl;
+                var data = {
+                    action: "dwc_basket_operations",
+                    basket_operation: "add",
+                    item: itemData
+                };
+                var callback = function (obj) {
+                    console.log(obj);
+                };
+                $.post(url, data, callback, 'json');
+            }
+
+            function deleteFromSession(itemIndex) {
+                var url = the_ajax_script.ajaxurl;
+                var data = {
+                    action: "dwc_basket_operations",
+                    basket_operation: "delete",
+                    item: itemIndex
+                };
+                var callback = function (obj) {
+                    console.log(obj);
+                };
+                $.post(url, data, callback, 'json');
+            }
+
             function addToCart(id) {
                 if (id != '') {
                     var data = getDonationType(id);
@@ -284,32 +312,33 @@ function my_registration_form($params, $content = null)
                         data['price'] = data['default_price'];
                     }
                     donationCart.push(data);
+                    addToSession(data);
                     resetDonationTypeFields();
                     displayCart();
 
-                    var data = {
-                        action: 'my_first_ajax_action',
-                        post_var: 'this will be echoed back',
-                        wasd: "wasdsad"
-                    };
+                    // var data = {
+                    //     action: 'my_first_ajax_action',
+                    //     post_var: 'this will be echoed back',
+                    //     wasd: "wasdsad"
+                    // };
                     // // the_ajax_script.ajaxurl is a variable that will contain the url to the ajax processing file
                     // $.post(the_ajax_script.ajaxurl, data, function (response) {
                     //     alert(response);
                     // });
 
-                    $.ajax({
-                            "url": the_ajax_script.ajaxurl,
-                            "type": "post",
-                            "data": data,
-                            success: function (obj) {
-                                console.log("success!");
-                                console.log(obj);
-                            },
-                            error: function (obj) {
-                                console.log("error! status:" + obj.status + "\n" + "text:" + obj.responseText);
-                            }
-                        }
-                    );
+                    // $.ajax({
+                    //         "url": the_ajax_script.ajaxurl,
+                    //         "type": "post",
+                    //         "data": data,
+                    //         success: function (obj) {
+                    //             console.log("success!");
+                    //             console.log(obj);
+                    //         },
+                    //         error: function (obj) {
+                    //             console.log("error! status:" + obj.status + "\n" + "text:" + obj.responseText);
+                    //         }
+                    //     }
+                    // );
                 }
             }
 
@@ -333,6 +362,7 @@ function my_registration_form($params, $content = null)
             }
 
             function deleteDonationFromCart(id) {
+                deleteFromSession(id);
                 for (var i in donationCart) {
                     if (parseInt(id) === parseInt(i)) {
                         donationCart.splice(i, 1);
@@ -400,26 +430,49 @@ function my_registration_form($params, $content = null)
 
 add_shortcode('my_form', 'my_registration_form');
 
+//
+//function test_ajax_load_scripts()
+//{
+//// load our jquery file that sends the $.post request
+//    wp_enqueue_script("ajax-test", plugin_dir_url(__FILE__) . '/ajax-test.js', array('jquery'));
+//
+//// make the ajaxurl var available to the above script
+//    wp_localize_script('ajax-test', 'the_ajax_script', array('ajaxurl' => admin_url('admin-ajax.php')));
+//}
+//
+//add_action('wp_print_scripts', 'test_ajax_load_scripts');
 
-function my_ajax_callback_function()
+function dwc_basket_operations()
 {
-    echo "hiii";
-    print_r($_POST);
+    // add/delete basket items.
+    // calculate total price on each change. and return basket items with total.
+    if (session_id() == '') {
+        session_start();
+    }
+    if (!isset($_SESSION['donationBasket'])) {
+        $_SESSION['donationBasket'] = [];
+    }
+    if (isset($_POST['basket_operation'])) {
+        switch ($_POST['basket_operation']) {
+            case 'add':
+                array_push($_SESSION['donationBasket'], $_POST['item']);
+                break;
+            case 'delete':
+                array_splice($_SESSION['donationBasket'], $_POST['itemIndex'], 1);
+                break;
+            default:
+                break;
+        }
+    }
+    $total = (float)0;
+    foreach ($_SESSION['donationBasket'] as $item) {
+        $total += (float)$item['price'];
+    }
+    echo json_encode(['total' => $total, 'items' => $_SESSION['donationBasket']], JSON_UNESCAPED_UNICODE);
     wp_die();
 }
 
-add_action('wp_ajax_my_first_ajax_action', 'my_ajax_callback_function');
-add_action('wp_ajax_nopriv_my_first_ajax_action', 'my_ajax_callback_function');
+add_action('wp_ajax_dwc_basket_operations', 'dwc_basket_operations');
+add_action('wp_ajax_nopriv_dwc_basket_operations', 'dwc_basket_operations');
 
-
-function test_ajax_load_scripts()
-{
-    // load our jquery file that sends the $.post request
-    wp_enqueue_script("ajax-test", plugin_dir_url(__FILE__) . '/ajax-test.js', array('jquery'));
-
-    // make the ajaxurl var available to the above script
-    wp_localize_script('ajax-test', 'the_ajax_script', array('ajaxurl' => admin_url('admin-ajax.php')));
-}
-
-add_action('wp_print_scripts', 'test_ajax_load_scripts');
 ?>
