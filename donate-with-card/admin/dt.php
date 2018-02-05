@@ -115,7 +115,7 @@ class Dt extends PluginBase
     {
         $result = $this->db->update(
             $this->tableName, //table
-            array('name' => $name, 'label' => $label, "default_price" => (float)$defaultPrice), //data
+            array('name' => $name, 'label' => $label, "default_price" => $defaultPrice), //data
             array('ID' => $id), //where
             array('%s', '%s', '%f'), //data format
             array('%d') //where format
