@@ -1,21 +1,23 @@
 msgid ""
 msgstr ""
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Project-Id-Version: Donate With Card\n"
-"POT-Creation-Date: 2018-02-01 14:28+0300\n"
-"PO-Revision-Date: 2018-02-01 14:36+0300\n"
+"POT-Creation-Date: 2018-02-06 11:34+0300\n"
+"PO-Revision-Date: 2018-02-06 11:35+0300\n"
+"Last-Translator: \n"
 "Language-Team: \n"
+"Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.0.5\n"
 "X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
 "X-Poedit-WPHeader: donate-with-card.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
-"Last-Translator: \n"
-"Language: tr_TR\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
+"_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
@@ -73,54 +75,120 @@ msgstr "Silinme sırasında hata oluştu!"
 msgid "Edit Donation Type #%s - %s"
 msgstr "Bağış tipi düzenle #%s - %s"
 
-#: admin/dt.php:196 admin/dt.php:253
+#: admin/dt.php:196 admin/dt.php:254
 msgid "Unique name"
 msgstr "Benzersiz Ad"
 
-#: admin/dt.php:200 admin/dt.php:257 admin/dt.php:294
+#: admin/dt.php:200 admin/dt.php:258 admin/dt.php:296
 msgid "Label"
 msgstr "İsim"
 
-#: admin/dt.php:204 admin/dt.php:261 admin/dt.php:295
+#: admin/dt.php:204 admin/dt.php:262 admin/dt.php:297
 msgid "Default Price"
 msgstr "Varsayılan Değer"
 
-#: admin/dt.php:212 admin/dt.php:267
+#: admin/dt.php:213 admin/dt.php:269
 msgid "Save"
 msgstr "Kaydet"
 
-#: admin/dt.php:229
+#: admin/dt.php:230
 #, php-format
-msgid "Are you sure you want to delete donation type <strong>#%s - %s</strong> ?"
-msgstr "<strong>#%s - %s</strong> bağış tipini silmek istediğinize emin misiniz?"
+msgid ""
+"Are you sure you want to delete donation type <strong>#%s - %s</strong> ?"
+msgstr ""
+"<strong>#%s - %s</strong> bağış tipini silmek istediğinize emin misiniz?"
 
-#: admin/dt.php:236
+#: admin/dt.php:237
 msgid "Delete"
 msgstr "Sil"
 
-#: admin/dt.php:238
+#: admin/dt.php:239
 msgid "&laquo; Back to the list."
 msgstr "&laquo; Listeye geri dön"
 
-#: admin/dt.php:249
+#: admin/dt.php:250
 msgid "Add Donation Type"
 msgstr "Yeni Bağış Tipi"
 
-#: admin/dt.php:283
+#: admin/dt.php:285
 msgid "Donation Types"
 msgstr "Bağış Tipleri"
 
-#: admin/dt.php:286
+#: admin/dt.php:288
 msgid "Add New Donation Type"
 msgstr "Yeni Ödeme Tipi Ekle"
 
-#: admin/dt.php:293
+#: admin/dt.php:295
 msgid "Name"
 msgstr "Ad"
 
-#: admin/dt.php:296
+#: admin/dt.php:298
 msgid "Actions"
 msgstr "İşlemler"
+
+#: public/includes/donate_form_view.php:5
+msgid "Select Donation"
+msgstr "Bağış Yapın"
+
+#: public/includes/donate_form_view.php:8
+msgid "Select donation type"
+msgstr "Bağış tipi seçiniz."
+
+#: public/includes/donate_form_view.php:11
+msgid "Add to box"
+msgstr "Kutuya Ekle"
+
+#: public/includes/donate_form_view.php:14
+msgid "Donation Box"
+msgstr "Bağış Kutusu"
+
+#: public/includes/donate_form_view.php:18
+msgid "Total"
+msgstr "Toplam"
+
+#: public/includes/donate_form_view.php:21
+msgid "Your Info"
+msgstr "Bilgileriniz"
+
+#: public/includes/donate_form_view.php:24
+msgid "Your name"
+msgstr "Adınız Soyadınız"
+
+#: public/includes/donate_form_view.php:28
+msgid "Your Phone"
+msgstr "Telefon Numaranız"
+
+#: public/includes/donate_form_view.php:32
+msgid "Your E-mail"
+msgstr "E-Posta Adresiniz"
+
+#: public/includes/donate_form_view.php:36
+msgid "Your SSN"
+msgstr "T.C. Kimlik Numaranız"
+
+#: public/includes/donate_form_view.php:40
+msgid "Notes"
+msgstr "Bağış Notunuz"
+
+#: public/includes/donate_form_view.php:46
+msgid "Cardholder Name"
+msgstr "Kart sahibi adı"
+
+#: public/includes/donate_form_view.php:48
+msgid "Card No"
+msgstr "Kart no"
+
+#: public/includes/donate_form_view.php:52
+msgid "Expires"
+msgstr "Son Kullanma Tarihi"
+
+#: public/includes/donate_form_view.php:55
+msgid "CVC Code"
+msgstr "CVC Kodu"
+
+#: public/includes/donate_form_view.php:58
+msgid "Donate"
+msgstr "Bağış Yapın"
 
 #. Plugin Name of the plugin/theme
 msgid "Donate With Card"
