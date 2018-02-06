@@ -1,0 +1,15 @@
+.hideStep {
+    display: none;
+}
+
+#step1, #step2, #step3 {
+
+}
+
+#firstStepContinueButton, #secondStepContinueButton {
+    float: right;
+}
+
+#secondStepBackButton {
+    float: left;
+}

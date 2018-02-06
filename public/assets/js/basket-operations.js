@@ -1,5 +1,7 @@
 $ = jQuery;
+
 $(function () {
+    var donationBasket = [];
 
     // makes a post request to wp ajax and returns the cart and total datas. This method is intended to run on load.
     function initialCartDataFetch() {
@@ -83,6 +85,7 @@ $(function () {
     // Refreshes and re-prints the donation cart to the list by the given cart info fetched from ajax result.
     function displayCart(cartObj) {
         $('#donationCart').html('');
+        donationBasket = cartObj.items;
         for (var i in cartObj.items) {
             var item = cartObj.items[i];
             $('#donationCart').append('<li>' + item['label'] + '<a style="font-size: 12px;cursor: pointer;box-shadow: none;color: red;padding-left: 8px;" class="removeFromCart" data-id="' + i + '">( Sil )</a><span style="float:right;">' + parseFloat(item['price']).toFixed(2) + ' TL</span></li>');
@@ -135,21 +138,44 @@ $(function () {
         addToCart(id);
     });
 
-    // Credit card beautifier initialization.
-    $('form#donation_infos').card({
-        form: 'form#donation_infos',
-        placeholders: {
-            number: '1234 5678 9012 3456',
-            name: 'ADINIZ SOYADINIZ',
-            expiry: '01/2018',
-            cvc: '123'
-        },
-        formSelectors: {
-            numberInput: 'input#card_number',
-            expiryInput: 'input#card_expiry',
-            cvcInput: 'input#card_cvc',
-            nameInput: 'input#cardholder_name'
-        },
-        container: '.card-wrapper'
+    // first step continue button actions
+    $('#firstStepContinueButton').click(function () {
+        if (donationBasket.length < 1) {
+            alert("Bağış kutunuz boş!");
+            return false;
+        } else {
+            $('#step1').addClass("hideStep");
+            $('#step2').removeClass("hideStep").addClass("fadeInRight");
+        }
     });
+
+    // second step back button actions
+    $('#secondStepBackButton').click(function () {
+        $('#step2').addClass("hideStep");
+        $('#step1').removeClass("hideStep").addClass("fadeInLeft");
+    });
+
+    //second step forward button actions
+    $('#secondStepContinueButton').click(function () {
+        $('#step2').addClass("hideStep");
+        $('#step3').removeClass("hideStep").addClass("fadeInRight");
+        // Credit card beautifier initialization.
+        $('form#donation_infos').card({
+            form: 'form#donation_infos',
+            placeholders: {
+                number: '1234 5678 9012 3456',
+                name: 'ADINIZ SOYADINIZ',
+                expiry: '01/2018',
+                cvc: '123'
+            },
+            formSelectors: {
+                numberInput: 'input#card_number',
+                expiryInput: 'input#card_expiry',
+                cvcInput: 'input#card_cvc',
+                nameInput: 'input#cardholder_name'
+            },
+            container: '.card-wrapper'
+        });
+    });
+
 });
