@@ -1,7 +1,7 @@
 $ = jQuery;
 $(function () {
-    var donationCart = [];
 
+    // makes a post request to wp ajax and returns the cart and total datas. This method is intended to run on load.
     function initialCartDataFetch() {
         var url = adminUrl;
         var data = {
@@ -13,8 +13,10 @@ $(function () {
         $.post(url, data, callback, 'json');
     }
 
+    // run the initial method
     initialCartDataFetch();
 
+    // gets the donation type by the given id. donation type list defined in the view page (in /public/donate_form_view.php:3)
     function getDonationType(id) {
         for (var i in dt) {
             if (dt[i]['id'] == id) {
@@ -24,20 +26,13 @@ $(function () {
         return false;
     }
 
+    // resets donation type select and custom donation amount input
     function resetDonationTypeFields() {
         $('#donation_types').prop('selectedIndex', 0);
         $('#donation_amount').val("").attr("disabled", false);
     }
 
-    function calculateCartTotal() {
-        var total = 0;
-        for (var i in donationCart) {
-            var price = null == donationCart[i]['price'] ? parseFloat(donationCart[i]['default_price']) : parseFloat(donationCart[i]['price']);
-            total += price;
-        }
-        return total;
-    }
-
+    // makes an ajax call and adds selected basket item to the session, and refreshes the card according to the returned data.
     function addToSession(itemData) {
         var url = adminUrl;
         var data = {
@@ -51,6 +46,7 @@ $(function () {
         $.post(url, data, callback, 'json');
     }
 
+    // makes an ajax call and removes seleted basket item from session by the basket item id ( not donation type id), and refreshes the card according to the returned data.
     function deleteFromSession(itemIndex) {
         var url = adminUrl;
         var data = {
@@ -64,6 +60,7 @@ $(function () {
         $.post(url, data, callback, 'json');
     }
 
+    // calculation and adding to cart of selected donation type and amount. Called when add to cart button is clicked.
     function addToCart(id) {
         if (id != '') {
             var data = getDonationType(id);
@@ -78,12 +75,12 @@ $(function () {
             } else {
                 data['price'] = data['default_price'];
             }
-            donationCart.push(data);
             addToSession(data);
             resetDonationTypeFields();
         }
     }
 
+    // Refreshes and re-prints the donation cart to the list by the given cart info fetched from ajax result.
     function displayCart(cartObj) {
         $('#donationCart').html('');
         for (var i in cartObj.items) {
@@ -95,6 +92,7 @@ $(function () {
         registerDeleteLinks();
     }
 
+    // registers cart item delete button click event and its handler.
     function registerDeleteLinks() {
         $('a.removeFromCart').off('click').click(function (e) {
             var id = parseInt($(this).data('id'));
@@ -104,11 +102,12 @@ $(function () {
         });
     }
 
-    // add donation types to option
+    // adds donation types as select's option donation types defined in the view page (in /public/donate_form_view.php:3)
     for (var i in dt) {
         $('#donation_types').append('<option value="' + dt[i]['id'] + '">' + dt[i]['label'] + '</option>');
     }
 
+    // Donation type select change event registration
     $('#donation_types').change(function (e) {
         var id = $(this).val();
         if ('' != id) {
@@ -125,6 +124,7 @@ $(function () {
         }
     });
 
+    // Donation card add button event registration
     $('#addToCart').click(function (e) {
         var id = parseInt($('#donation_types').val());
 
@@ -135,7 +135,7 @@ $(function () {
         addToCart(id);
     });
 
-
+    // Credit card beautifier initialization.
     $('form#donation_infos').card({
         form: 'form#donation_infos',
         placeholders: {
