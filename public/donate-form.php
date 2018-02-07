@@ -51,6 +51,9 @@ function dwc_basket_operations()
             case 'delete':
                 array_splice($_SESSION['donationBasket'], $_POST['itemIndex'], 1);
                 break;
+            case 'addDonatorInfos':
+                $_SESSION['donatorInfos'] = $_POST['data'];
+                break;
             default:
                 break;
         }
@@ -59,7 +62,7 @@ function dwc_basket_operations()
     foreach ($_SESSION['donationBasket'] as $item) {
         $total += (float)$item['price'];
     }
-    echo json_encode(['total' => $total, 'items' => $_SESSION['donationBasket']], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['total' => $total, 'items' => $_SESSION['donationBasket'], 'donatorInfos' => $_SESSION['donatorInfos']], JSON_UNESCAPED_UNICODE);
     wp_die();
 }
 

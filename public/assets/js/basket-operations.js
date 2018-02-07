@@ -1,5 +1,15 @@
 $ = jQuery;
 
+var labels = [
+    "Lütfen bir bağış miktarı giriniz.",
+    "Sil",
+    "TL",
+    "Toplam",
+    "Bağış kutunuz boş!",
+    "Ad Soyad",
+
+];
+
 $(function () {
     var donationBasket = [];
 
@@ -71,7 +81,7 @@ $(function () {
                 if (parseFloat(customAmount) > 0) {
                     data['price'] = parseFloat(customAmount).toFixed(2);
                 } else {
-                    alert("Lütfen bir bağış miktarı giriniz.");
+                    alert(labels[0]);
                     return;
                 }
             } else {
@@ -88,10 +98,10 @@ $(function () {
         donationBasket = cartObj.items;
         for (var i in cartObj.items) {
             var item = cartObj.items[i];
-            $('#donationCart').append('<li>' + item['label'] + '<a style="font-size: 12px;cursor: pointer;box-shadow: none;color: red;padding-left: 8px;" class="removeFromCart" data-id="' + i + '">( Sil )</a><span style="float:right;">' + parseFloat(item['price']).toFixed(2) + ' TL</span></li>');
+            $('#donationCart').append('<li>' + item['label'] + '<a style="font-size: 12px;cursor: pointer;box-shadow: none;color: red;padding-left: 8px;" class="removeFromCart" data-id="' + i + '">( ' + labels[1] + ' )</a><span style="float:right;">' + parseFloat(item['price']).toFixed(2) + ' ' + labels[2] + '</span></li>');
         }
         $('#donationCart').append('<hr/>');
-        $('#donationCart').append('<li>Toplam<span style="float:right;">' + cartObj.total.toFixed(2) + '</span></li>');
+        $('#donationCart').append('<li>' + labels[3] + '<span style="float:right;">' + cartObj.total.toFixed(2) + ' ' + labels[2] + '</span></li>');
         registerDeleteLinks();
     }
 
@@ -141,7 +151,7 @@ $(function () {
     // first step continue button actions
     $('#firstStepContinueButton').click(function () {
         if (donationBasket.length < 1) {
-            alert("Bağış kutunuz boş!");
+            alert(labels[4]);
             return false;
         } else {
             $('#step1').addClass("hideStep");
@@ -155,27 +165,79 @@ $(function () {
         $('#step1').removeClass("hideStep").addClass("fadeInLeft");
     });
 
+    // checks if donator infos are correctly entered
+    function isReadyForThirdStep() {
+        var infoFieldIds = ["name", "tel", "email", "tckn"];
+        for (var i in infoFieldIds) {
+            if ("" === $("#" + infoFieldIds[i]).val()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // makes an ajax call and saves entered donator info to database.
+    function saveDonatorInfos(data, ajax_callback) {
+        var url = adminUrl;
+        var data = {
+            action: "dwc_basket_operations",
+            basket_operation: "addDonatorInfos",
+            data: data
+        };
+        var callback = function (obj) {
+            console.log(obj);
+            ajax_callback();
+        };
+        $.post(url, data, callback, 'json');
+    }
+
     //second step forward button actions
     $('#secondStepContinueButton').click(function () {
-        $('#step2').addClass("hideStep");
-        $('#step3').removeClass("hideStep").addClass("fadeInRight");
-        // Credit card beautifier initialization.
-        $('form#donation_infos').card({
-            form: 'form#donation_infos',
-            placeholders: {
-                number: '1234 5678 9012 3456',
-                name: 'ADINIZ SOYADINIZ',
-                expiry: '01/2018',
-                cvc: '123'
-            },
-            formSelectors: {
-                numberInput: 'input#card_number',
-                expiryInput: 'input#card_expiry',
-                cvcInput: 'input#card_cvc',
-                nameInput: 'input#cardholder_name'
-            },
-            container: '.card-wrapper'
+        if (isReadyForThirdStep() != true) {
+            alert("Lütfen bilgilerinizi giriniz.");
+            return false;
+        }
+
+        var data = {};
+        data.name = $('#name').val();
+        data.tel = $('#tel').val();
+        data.email = $('#email').val();
+        data.tckn = $('#tckn').val();
+        data.donation_notes = $('#donation_notes').val();
+        saveDonatorInfos(data, function () {
+            $('#step2').addClass("hideStep");
+            $('#step3').removeClass("hideStep").addClass("fadeInRight");
+            // Credit card beautifier initialization.
+            $('form#donation_infos').card({
+                form: 'form#donation_infos',
+                placeholders: {
+                    number: 'xxxx xxxx xxxx xxxx',
+                    name: labels[5],
+                    expiry: 'xx/xxx',
+                    cvc: 'xxx'
+                },
+                formSelectors: {
+                    numberInput: 'input#card_number',
+                    expiryInput: 'input#card_expiry',
+                    cvcInput: 'input#card_cvc',
+                    nameInput: 'input#cardholder_name'
+                },
+                container: '.card-wrapper'
+                // masks: {
+                //     cardNumber: '•' // optional - mask card number
+                // },
+            });
         });
+    });
+
+    // third step back button actions
+    $('#thirdStepBackButton').click(function () {
+        $('#step3').addClass("hideStep");
+        $('#step2').removeClass("hideStep").addClass("fadeInLeft");
+    });
+
+    $('#thirdButtonContinueButton').click(function () {
+
     });
 
 });

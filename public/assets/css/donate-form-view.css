@@ -6,10 +6,10 @@
 
 }
 
-#firstStepContinueButton, #secondStepContinueButton {
+#firstStepContinueButton, #secondStepContinueButton, #thirdButtonContinueButton {
     float: right;
 }
 
-#secondStepBackButton {
+#secondStepBackButton, #thirdStepBackButton {
     float: left;
 }

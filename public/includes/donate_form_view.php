@@ -19,31 +19,31 @@
             <li><?php _e("Total", "dwc-plugin"); ?> <span style="float:right;">0 TL</span></li>
         </ul>
     </div>
-    <button id="firstStepContinueButton">Bilgileriniz &raquo;</button>
+    <button id="firstStepContinueButton"><?php _e("Your Info", "dwc-plugin"); ?> &raquo;</button>
 </div>
 <div id="step2" class="hideStep animated">
     <h3><?php _e("Your Info", "dwc-plugin"); ?></h3>
     <label for=""><?php _e("Your name", "dwc-plugin"); ?>
-        <input type="text" name="name"/>
+        <input type="text" id="name" name="name"/>
     </label>
 
     <label for=""><?php _e("Your Phone", "dwc-plugin"); ?>
-        <input type="tel" name="tel"/>
+        <input type="tel" id="tel" name="tel"/>
     </label>
 
     <label for=""><?php _e("Your E-mail", "dwc-plugin"); ?>
-        <input type="email" name="email"/>
+        <input type="email" id="email" name="email"/>
     </label>
 
     <label for=""><?php _e("Your SSN", "dwc-plugin"); ?>
-        <input type="text" name="tckn"/>
+        <input type="text" id="tckn" name="tckn" maxlength="11"/>
     </label>
 
     <label for=""><?php _e("Notes", "dwc-plugin"); ?>
-        <textarea name="donation_notes" rows="5" cols="30"></textarea>
+        <textarea name="donation_notes" id="donation_notes" rows="5" cols="30"></textarea>
     </label>
-    <button id="secondStepContinueButton">Kart Bilgileriniz &raquo;</button>
-    <button id="secondStepBackButton">&laquo; Geri</button>
+    <button id="secondStepContinueButton"><?php _e("Card Infos", "dwc-plugin"); ?>&raquo;</button>
+    <button id="secondStepBackButton"><?php _e("&laquo; Back", "dwc-plugin"); ?> </button>
 
 </div>
 <div id="step3" class="hideStep animated">
@@ -61,7 +61,8 @@
             <input type="text" id="card_cvc" name="cvc" placeholder="<?php _e("CVC Code", "dwc-plugin"); ?>"/>
         </div>
         <div style="clear:both;"></div>
-        <input type="submit" name="donation" value="<?php _e("Donate", "dwc-plugin"); ?>"/>
-
+        <!--        <input type="submit" name="donation" value=""/>-->
     </form>
+    <button id="thirdStepBackButton" type="button"><?php _e("&laquo; Back", "dwc-plugin"); ?> </button>
+    <button id="thirdButtonContinueButton" type="button"><?php _e("Donate", "dwc-plugin"); ?></button>
 </div>
