@@ -237,7 +237,7 @@ $(function () {
     });
 
     $('#thirdButtonContinueButton').click(function () {
-
+        $('#donation_infos').submit();
     });
 
 });

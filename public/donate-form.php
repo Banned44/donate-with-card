@@ -77,11 +77,21 @@ function dwc_donation_post_actions()
             die('You are not authorized to perform this action.');
         } else {
             $error = null;
-            if (empty($_POST['name'])) {
-                $error = new WP_Error('empty_error', __('Please enter name.', 'dwc-plugin'));
-                wp_die($error->get_error_message(), __('CustomForm Error', 'dwc-plugin'));
-            } else
+            if (empty($_POST['cardholder_name'])) {
+                $error = new WP_Error('empty_error', __('Please enter cardholder name.', 'dwc-plugin'));
+                wp_die($error->get_error_message(), __('Donation Form Error', 'dwc-plugin'));
+            } else if (empty($_POST['card_number'])) {
+                $error = new WP_Error('empty_error', __('Please enter card number.', 'dwc-plugin'));
+                wp_die($error->get_error_message(), __('Donation Form Error', 'dwc-plugin'));
+            } else if (empty($_POST['card_expiry'])) {
+                $error = new WP_Error('empty_error', __('Please enter card expiry.', 'dwc-plugin'));
+                wp_die($error->get_error_message(), __('Donation Form Error', 'dwc-plugin'));
+            } else if (empty($_POST['card_cvc'])) {
+                $error = new WP_Error('empty_error', __('Please enter CVC code.', 'dwc-plugin'));
+                wp_die($error->get_error_message(), __('Donation Form Error', 'dwc-plugin'));
+            } else {
                 die('Its safe to do further processing on submitted data.');
+            }
         }
     }
 }

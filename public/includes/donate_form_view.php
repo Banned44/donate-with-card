@@ -49,16 +49,16 @@
 <div id="step3" class="hideStep animated">
     <form method="post" action="" id="donation_infos">
         <div class='card-wrapper'></div>
-        <input type="text" id="cardholder_name" name="name" placeholder="<?php _e("Cardholder Name", "dwc-plugin"); ?>"
+        <input type="text" id="cardholder_name" name="cardholder_name" placeholder="<?php _e("Cardholder Name", "dwc-plugin"); ?>"
                style="width:50%;float:left;"/>
-        <input type="text" id="card_number" name="number" placeholder="<?php _e("Card No", "dwc-plugin"); ?>"
+        <input type="text" id="card_number" name="card_number" placeholder="<?php _e("Card No", "dwc-plugin"); ?>"
                style="width:50%;float:left;">
         <div style="clear:both;"></div>
         <div style="width:50%;float:left;">
             <input type="text" id="card_expiry" name="card_expiry" placeholder="<?php _e("Expires", "dwc-plugin"); ?>"
         </div>
         <div style="width:50%;float:left;">
-            <input type="text" id="card_cvc" name="cvc" placeholder="<?php _e("CVC Code", "dwc-plugin"); ?>"/>
+            <input type="text" id="card_cvc" name="card_cvc" placeholder="<?php _e("CVC Code", "dwc-plugin"); ?>"/>
         </div>
         <div style="clear:both;"></div>
         <!--        <input type="submit" name="donation" value=""/>-->
