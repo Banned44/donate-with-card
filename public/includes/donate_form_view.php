@@ -62,6 +62,7 @@
         </div>
         <div style="clear:both;"></div>
         <!--        <input type="submit" name="donation" value=""/>-->
+        <?php wp_nonce_field( 'dwc_nonce_action', 'dwc_donation_nonce' ); ?>
     </form>
     <button id="thirdStepBackButton" type="button"><?php _e("&laquo; Back", "dwc-plugin"); ?> </button>
     <button id="thirdButtonContinueButton" type="button"><?php _e("Donate", "dwc-plugin"); ?></button>

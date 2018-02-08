@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Donate With Card\n"
-"POT-Creation-Date: 2018-02-06 11:36+0300\n"
-"PO-Revision-Date: 2018-02-06 11:36+0300\n"
+"POT-Creation-Date: 2018-02-07 14:52+0300\n"
+"PO-Revision-Date: 2018-02-07 16:45+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: tr_TR\n"
@@ -126,67 +126,81 @@ msgstr "Ad"
 msgid "Actions"
 msgstr "İşlemler"
 
-#: public/includes/donate_form_view.php:5
+#: public/includes/donate_form_view.php:6
 msgid "Select Donation"
 msgstr "Bağış Yapın"
 
-#: public/includes/donate_form_view.php:8
+#: public/includes/donate_form_view.php:9
 msgid "Select donation type"
 msgstr "Bağış tipi seçiniz."
 
-#: public/includes/donate_form_view.php:11
+#: public/includes/donate_form_view.php:12
 msgid "Add to box"
 msgstr "Kutuya Ekle"
 
-#: public/includes/donate_form_view.php:14
+#: public/includes/donate_form_view.php:15
 msgid "Donation Box"
 msgstr "Bağış Kutusu"
 
-#: public/includes/donate_form_view.php:18
+#: public/includes/donate_form_view.php:19
 msgid "Total"
 msgstr "Toplam"
 
-#: public/includes/donate_form_view.php:21
+#: public/includes/donate_form_view.php:22
+#: public/includes/donate_form_view.php:25
 msgid "Your Info"
 msgstr "Bilgileriniz"
 
-#: public/includes/donate_form_view.php:24
+#: public/includes/donate_form_view.php:26
 msgid "Your name"
 msgstr "Adınız Soyadınız"
 
-#: public/includes/donate_form_view.php:28
+#: public/includes/donate_form_view.php:30
 msgid "Your Phone"
 msgstr "Telefon Numaranız"
 
-#: public/includes/donate_form_view.php:32
+#: public/includes/donate_form_view.php:34
 msgid "Your E-mail"
 msgstr "E-Posta Adresiniz"
 
-#: public/includes/donate_form_view.php:36
+#: public/includes/donate_form_view.php:38
 msgid "Your SSN"
 msgstr "T.C. Kimlik Numaranız"
 
-#: public/includes/donate_form_view.php:40
+#: public/includes/donate_form_view.php:42
 msgid "Notes"
 msgstr "Bağış Notunuz"
 
+#: public/includes/donate_form_view.php:45
+#, fuzzy
+#| msgid "Card No"
+msgid "Card Infos"
+msgstr "Kart no"
+
 #: public/includes/donate_form_view.php:46
+#: public/includes/donate_form_view.php:66
+#, fuzzy
+#| msgid "&laquo; Back to the list."
+msgid "&laquo; Back"
+msgstr "&laquo; Listeye geri dön"
+
+#: public/includes/donate_form_view.php:52
 msgid "Cardholder Name"
 msgstr "Kart sahibi adı"
 
-#: public/includes/donate_form_view.php:48
+#: public/includes/donate_form_view.php:54
 msgid "Card No"
 msgstr "Kart no"
 
-#: public/includes/donate_form_view.php:52
+#: public/includes/donate_form_view.php:58
 msgid "Expires"
 msgstr "Son Kullanma Tarihi"
 
-#: public/includes/donate_form_view.php:55
+#: public/includes/donate_form_view.php:61
 msgid "CVC Code"
 msgstr "CVC Kodu"
 
-#: public/includes/donate_form_view.php:58
+#: public/includes/donate_form_view.php:67
 msgid "Donate"
 msgstr "Bağış Yapın"
 

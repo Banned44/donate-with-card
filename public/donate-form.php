@@ -68,3 +68,22 @@ function dwc_basket_operations()
 
 add_action('wp_ajax_dwc_basket_operations', 'dwc_basket_operations');
 add_action('wp_ajax_nopriv_dwc_basket_operations', 'dwc_basket_operations');
+
+
+function dwc_donation_post_actions()
+{
+    if (!empty($_POST['dwc_donation_nonce'])) {
+        if (!wp_verify_nonce($_POST['dwc_donation_nonce'], 'dwc_nonce_action')) {
+            die('You are not authorized to perform this action.');
+        } else {
+            $error = null;
+            if (empty($_POST['name'])) {
+                $error = new WP_Error('empty_error', __('Please enter name.', 'dwc-plugin'));
+                wp_die($error->get_error_message(), __('CustomForm Error', 'dwc-plugin'));
+            } else
+                die('Its safe to do further processing on submitted data.');
+        }
+    }
+}
+
+add_action('init', "dwc_donation_post_actions");
