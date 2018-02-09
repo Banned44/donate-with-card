@@ -1,6 +1,10 @@
 <script>
     var adminUrl = "<?php echo admin_url('admin-ajax.php'); ?>";
     var dt =<?php echo json_encode($donationTypes);?>;
+
+    var ajaxLoadImgUrl = "<?php echo plugin_dir_url(__DIR__) . 'assets/images/ajax-loader.gif';?>";
+
+
 </script>
 <div id="donationFormContainer">
     <div id="step1" class="animated">

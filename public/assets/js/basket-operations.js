@@ -14,7 +14,7 @@ $(function () {
 
     $(document)
         .ajaxStart(function () {
-            $('#donationFormContainer').block({message: null});
+            $('#donationFormContainer').block({message: '<img src="' + ajaxLoadImgUrl + '"/>'});
         })
         .ajaxComplete(function () {
             setTimeout(function () {
