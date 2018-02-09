@@ -119,7 +119,9 @@ register_deactivation_hook(__FILE__, "dwc_uninstall");
 
 require plugin_dir_path(__FILE__) . "admin/PluginBase.php";
 require plugin_dir_path(__FILE__) . "admin/dt.php";
+require plugin_dir_path(__FILE__) . "admin/Donations.php";
 new Dt();
+new Donations();
 
 // MENU STRUCTURE
 // DonateWithCard

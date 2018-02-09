@@ -53,7 +53,7 @@ class PluginBase
     {
         $result = false;
         try {
-            $reflection = new \ReflectionClass(__CLASS__);
+            $reflection = new \ReflectionClass(get_called_class());
             $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
             if (is_array($methods)) {
                 foreach ($methods as $method) {
