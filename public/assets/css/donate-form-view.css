@@ -13,3 +13,7 @@
 #secondStepBackButton, #thirdStepBackButton {
     float: left;
 }
+
+.clear {
+    clear: both;
+}

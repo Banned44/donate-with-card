@@ -22,6 +22,7 @@
             </ul>
         </div>
         <button id="firstStepContinueButton"><?php _e("Your Info", "dwc-plugin"); ?> &raquo;</button>
+        <div class="clear"></div>
     </div>
     <div id="step2" class="hideStep animated">
         <h3><?php _e("Your Info", "dwc-plugin"); ?></h3>
@@ -46,7 +47,7 @@
         </label>
         <button id="secondStepContinueButton"><?php _e("Card Infos", "dwc-plugin"); ?>&raquo;</button>
         <button id="secondStepBackButton"><?php _e("&laquo; Back", "dwc-plugin"); ?> </button>
-
+        <div class="clear"></div>
     </div>
     <div id="step3" class="hideStep animated">
         <form method="post" action="" id="donation_infos">
@@ -70,6 +71,7 @@
         </form>
         <button id="thirdStepBackButton" type="button"><?php _e("&laquo; Back", "dwc-plugin"); ?> </button>
         <button id="thirdButtonContinueButton" type="button"><?php _e("Donate", "dwc-plugin"); ?></button>
+        <div class="clear"></div>
     </div>
 
 </div>
