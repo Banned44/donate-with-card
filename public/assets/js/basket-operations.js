@@ -7,11 +7,20 @@ var labels = [
     "Toplam",
     "Bağış kutunuz boş!",
     "Ad Soyad",
-
 ];
 
 $(function () {
     var donationBasket = [];
+
+    $(document)
+        .ajaxStart(function () {
+            $('#donationFormContainer').block({message: null});
+        })
+        .ajaxComplete(function () {
+            setTimeout(function () {
+                $('#donationFormContainer').unblock();
+            }, 3000);
+        });
 
     // makes a post request to wp ajax and returns the cart and total datas. This method is intended to run on load.
     function initialCartDataFetch() {

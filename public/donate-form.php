@@ -9,6 +9,7 @@ function dwc_donate_form_reg_scripts()
     wp_register_script('cardjs1-js', plugins_url('donate-with-card/public/assets/js/card.js'));
     wp_register_script('cardjs2-js', plugins_url('donate-with-card/public/assets/js/jquery.card.js'), array('jquery'));
     wp_register_script('basket-ops-js', plugins_url('donate-with-card/public/assets/js/basket-operations.js'), array('jquery'), null, true);
+    wp_register_script('blockui-js', plugins_url('donate-with-card/public/assets/js/jquery.blockUI.min.js'), array('jquery'), null, true);
 }
 
 function my_registration_form($params, $content = null)
@@ -26,6 +27,7 @@ function my_registration_form($params, $content = null)
     wp_enqueue_style('donate-form-css');
     wp_enqueue_script('cardjs1-js');
     wp_enqueue_script('cardjs2-js');
+    wp_enqueue_script('blockui-js');
     wp_enqueue_script('basket-ops-js');
     ob_start();
     require_once 'includes/donate_form_view.php';
