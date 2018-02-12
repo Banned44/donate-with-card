@@ -17,9 +17,10 @@ $(function () {
             $('#donationFormContainer').block({message: '<img src="' + ajaxLoadImgUrl + '"/>'});
         })
         .ajaxComplete(function () {
-            setTimeout(function () {
-                $('#donationFormContainer').unblock();
-            }, 3000);
+            $('#donationFormContainer').unblock();
+            // setTimeout(function () {
+            //
+            // }, 3000);
         });
 
     // makes a post request to wp ajax and returns the cart and total datas. This method is intended to run on load.

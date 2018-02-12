@@ -64,6 +64,7 @@ function dwc_basket_operations()
     foreach ($_SESSION['donationBasket'] as $item) {
         $total += (float)$item['price'];
     }
+    $_SESSION['donationTotal'] = $total;
     echo json_encode(['total' => $total, 'items' => $_SESSION['donationBasket'], 'donatorInfos' => $_SESSION['donatorInfos']], JSON_UNESCAPED_UNICODE);
     wp_die();
 }
@@ -74,6 +75,9 @@ add_action('wp_ajax_nopriv_dwc_basket_operations', 'dwc_basket_operations');
 
 function dwc_donation_post_actions()
 {
+    if (session_id() == '') {
+        session_start();
+    }
     if (!empty($_POST['dwc_donation_nonce'])) {
         if (!wp_verify_nonce($_POST['dwc_donation_nonce'], 'dwc_nonce_action')) {
             die('You are not authorized to perform this action.');
@@ -92,8 +96,11 @@ function dwc_donation_post_actions()
                 $error = new WP_Error('empty_error', __('Please enter CVC code.', 'dwc-plugin'));
                 wp_die($error->get_error_message(), __('Donation Form Error', 'dwc-plugin'));
             } else {
-                die('Its safe to do further processing on submitted data.');
-
+//                die('Its safe to do further processing on submitted data.');
+                $d = new Donations();
+                $d->addSuccessfulDonation($_SESSION);
+                var_dump($_SESSION);
+                session_destroy();
                 // do vpos actions
                 // if successfull, add it to db and do not forget to destroy the session.
             }

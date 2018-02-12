@@ -16,6 +16,8 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+define("DWC_PLUGIN_DIR", plugin_dir_path(__FILE__));
+
 
 /**
  * Inserts necessary db tables upon activation
