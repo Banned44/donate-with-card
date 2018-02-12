@@ -92,8 +92,6 @@ function dwc_donation_post_actions()
                 $error = new WP_Error('empty_error', __('Please enter CVC code.', 'dwc-plugin'));
                 wp_die($error->get_error_message(), __('Donation Form Error', 'dwc-plugin'));
             } else {
-
-
                 die('Its safe to do further processing on submitted data.');
 
                 // do vpos actions

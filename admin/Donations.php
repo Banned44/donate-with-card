@@ -74,4 +74,37 @@ class Donations extends PluginBase
         <?php
     }
 
+
+    public function addSuccessfulDonation($data)
+    {
+        // insert to donations table and get the id
+        // if successful, add items to donation-items table.
+
+        // total
+        // name surname
+        // email
+        // phone
+        // trid
+        // donation-notes
+
+        $result = $this->db->insert(
+            $this->tableName,
+            array(
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+                'trid' => $data['trid'],
+                'donation-notes' => $data['donation_notes'],
+                'total' => $data['total'],
+            ),
+            array('%s', '%f', '%s', '%s', '%s', '%s'),
+            array('%d')
+        );
+
+        if (is_int($result) && $result > 0) {
+
+        } else if (!$result) {
+
+        }
+    }
 }
