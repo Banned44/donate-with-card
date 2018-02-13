@@ -102,6 +102,7 @@ function dwc_donation_post_actions()
                 if ($donationResult) {
                     echo 'OK';
 //                    header("Location: yoururl.php");
+//                    wp_safe_redirect( admin_url( 'your admin url here' ) );
 //                    die();
                 } else {
                     echo 'FAIL';
