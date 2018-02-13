@@ -54,7 +54,7 @@
         <div class="clear"></div>
     </div>
     <div id="step3" class="hideStep animated">
-        <form method="post" action="" id="donation_infos">
+        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" id="donation_infos">
             <div class='card-wrapper'></div>
             <input type="text" id="cardholder_name" name="cardholder_name"
                    placeholder="<?php _e("Cardholder Name", "dwc-plugin"); ?>"
@@ -72,6 +72,7 @@
             <div style="clear:both;"></div>
             <!--        <input type="submit" name="donation" value=""/>-->
             <?php wp_nonce_field('dwc_nonce_action', 'dwc_donation_nonce'); ?>
+            <input type="hidden" name="action" value="make_donation">
         </form>
         <button id="thirdStepBackButton" type="button"><?php _e("&laquo; Back", "dwc-plugin"); ?> </button>
         <button id="thirdButtonContinueButton" type="button"><?php _e("Donate", "dwc-plugin"); ?></button>

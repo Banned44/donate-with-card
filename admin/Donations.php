@@ -96,11 +96,12 @@ class Donations extends PluginBase
                 $this->insertDonationItems($donationId, $donationTypeId, $amount);
             }
             //  here add monolog and log that somebody has made a donation.
-            var_dump("INSERTION DONE, id is " . $this->db->insert_id);
+            return true;
             $this->db->query('COMMIT');
         } catch (Exception $e) {
             // here use that monolog to log the error with detailed description.
             $this->db->query('ROLLBACK');
+            return false;
         }
 
     }
