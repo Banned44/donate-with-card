@@ -103,7 +103,8 @@ function dwc_donation_post_actions()
                     echo 'OK';
 //                    header("Location: yoururl.php");
 //                    wp_safe_redirect( admin_url( 'your admin url here' ) );
-//                    die();
+                    wp_redirect(plugins_url("donate-with-card/public/thanks-for-donating.php"));
+                    die();
                 } else {
                     echo 'FAIL';
                 }
