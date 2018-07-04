@@ -4,8 +4,8 @@ Plugin Name: Donate With Card
 Plugin URI: https://github.com/Kambaa/donate-with-card
 description: A plugin to create a page for donating money via credit card
 Version: 0.0.1
-Author: Kambaa
-Author URI: http://kambaa.tk
+Author: Yusuf Gündüz
+Author URI: http://www.yusufgunduz.com.tr
 License: GPL3
 Text Domain: dwc-plugin
 Domain Path: /languages/
@@ -80,8 +80,10 @@ function dwc_ddl()
 
 function dwc_dml()
 {
-    /*
-    INSERT INTO `wp_donation-types` (`id`, `name`, `label`, `default_price`, `ord`) VALUES
+    $donationTypesTableName = $wpdb->prefix . 'donation-types';
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+
+    $sql = "INSERT INTO `".$donationTypesTableName."` (`id`, `name`, `label`, `default_price`, `ord`) VALUES
 (1, 'Hayat Kurtarınca Güzel', 'Hayat Kurtarınca Güzel', '115.00', NULL),
 (2, 'Genel Bağış', 'Genel Bağış', NULL, NULL),
 (3, 'Zekat', 'Zekat', NULL, NULL),
@@ -94,35 +96,33 @@ function dwc_dml()
 (10, 'Gözlerini Aç!', 'Gözlerini Aç!', '300.00', NULL),
 (11, 'Açlıktan Ölüyorum! Gerçekten...', 'Açlıktan Ölüyorum! Gerçekten...', '145.00', NULL),
 (12, 'Bizim İçin Su Onlar İçin Hayat', 'Bizim İçin Su Onlar İçin Hayat', NULL, NULL),
-(13, 'Kurban Olsun Sağlık Olsun', 'Kurban Olsun Sağlık Olsun', '430.00', NULL);*/
-
-
-}
-
-function dwc_deactivate()
-{
-
+(13, 'Kurban Olsun Sağlık Olsun', 'Kurban Olsun Sağlık Olsun', '430.00', NULL);";
+    dbDelta($sql);
 }
 
 function dwc_uninstall()
 {
-//    global $wpdb;
-//    $wpdb->query("DROP TABLE IF EXISTS $donationTypesTableName;");
-//    $wpdb->query("DROP TABLE IF EXISTS $donationsTableName;");
-//    $wpdb->query("DROP TABLE IF EXISTS $donationItemsTableName;");
-//    delete_option('donate_with_card_db_version');
+    $donationTypesTableName = $wpdb->prefix . 'donation-types';
+    $donationsTableName = $wpdb->prefix . 'donations';
+    $donationItemsTableName = $wpdb->prefix . 'donation-items';
+    global $wpdb;
+    $wpdb->query("DROP TABLE IF EXISTS $donationTypesTableName;");
+    $wpdb->query("DROP TABLE IF EXISTS $donationsTableName;");
+    $wpdb->query("DROP TABLE IF EXISTS $donationItemsTableName;");
+    delete_option('donate_with_card_db_version');
 }
 
 register_activation_hook(__FILE__, "dwc_ddl");
 register_activation_hook(__FILE__, "dwc_dml");
 register_deactivation_hook(__FILE__, "dwc_deactivate");
-// register_uninstall_hook(__FILE__,"dwc_uninstall");
 register_deactivation_hook(__FILE__, "dwc_uninstall");
 
 require plugin_dir_path(__FILE__) . "admin/PluginBase.php";
-require plugin_dir_path(__FILE__) . "admin/dt.php";
+require plugin_dir_path(__FILE__) . "admin/Dt.php";
 require plugin_dir_path(__FILE__) . "admin/Donations.php";
+
 new Dt();
+
 new Donations();
 
 // MENU STRUCTURE

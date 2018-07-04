@@ -1,16 +1,23 @@
 <?php
-
+/**
+ * Class Dt
+ * Donation Types Settings Page Menu, Display and Add/Edit/Delete Display/Operation class.
+ */
 class Dt extends PluginBase
 {
     private $tableName;
     private $db;
 
+    /**
+     * Operation result dialog classnames
+     */
     const MESSAGE_TYPE_SUCCESS = "success";
     const MESSAGE_TYPE_ERROR = "error";
     const MESSAGE_TYPE_INFO = "info";
 
     /**
      * Dt constructor.
+     * Registers menu and style_script_reg operations to wordpress.
      */
     public function __construct()
     {
@@ -21,6 +28,9 @@ class Dt extends PluginBase
         add_action('admin_init', array($this, self::PREFIX . "style_script_reg_operations"));
     }
 
+    /**
+     * Adds donation type config page to wordpress settings menu.
+     */
     public function menu_operations()
     {
         $pageTitle = __("DWC Settings - Donation Types", 'dwc-plugin');
@@ -31,12 +41,18 @@ class Dt extends PluginBase
         add_options_page($pageTitle, $menuText, $capability, $menuSlug, $callback);
     }
 
+    /**
+     * Adds datatable css/js scripts to header
+     */
     public function style_script_reg_operations()
     {
         wp_register_style('datatables-css', "//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css");
         wp_register_script('datatables-js', '//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js');
     }
 
+    /**
+     * Donation types admin page main controller
+     */
     public function page_controller()
     {
         $action = @$_GET['action'];
@@ -91,6 +107,12 @@ class Dt extends PluginBase
         return $this->dataListDisplay();
     }
 
+    /**
+     * Adds a new donation type to database
+     * @param $name string
+     * @param $label string
+     * @param $defaultPrice string|float (decimal sepearator must be a dot)
+     */
     private function add($name, $label, $defaultPrice)
     {
         $result = $this->db->insert(
@@ -111,6 +133,13 @@ class Dt extends PluginBase
         }
     }
 
+    /**
+     * Edits given donation type id with given datas
+     * @param $id int
+     * @param $name string
+     * @param $label string
+     * @param $defaultPrice string|float|null
+     */
     private function edit($id, $name, $label, $defaultPrice)
     {
         $result = $this->db->update(
@@ -131,6 +160,10 @@ class Dt extends PluginBase
         }
     }
 
+    /**
+     * Deletes given donation type by id
+     * @param $id int
+     */
     private function delete($id)
     {
         $result = $this->db->delete($this->tableName, array('ID' => $id), array("%d"));
@@ -145,6 +178,10 @@ class Dt extends PluginBase
         }
     }
 
+    /**
+     * Returns the donation type by the id (id is taken from $_GET['id'])
+     * @return array|null
+     */
     private function getById()
     {
         $id = (int)filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -152,12 +189,21 @@ class Dt extends PluginBase
         return $this->db->get_row($query, ARRAY_A);
     }
 
+    /** Returns the donation type list
+     * @return mixed
+     */
     private function getAll()
     {
         $sql = "SELECT * FROM `" . $this->tableName . "` ORDER BY ord ASC";
         return $this->db->get_results($sql, ARRAY_A);
     }
 
+    /**
+     * Returns success message html
+     * @param $title
+     * @param $message
+     * @param string $messageType
+     */
     private function resultDisplay($title, $message, $messageType = self::MESSAGE_TYPE_SUCCESS)
     {
         ?>
@@ -174,11 +220,20 @@ class Dt extends PluginBase
         <?php
     }
 
+    /**
+     * Returns fail message html
+     * @param $title
+     * @param $message
+     */
     private function errorDisplay($title, $message)
     {
         return $this->resultDisplay($title, $message, self::MESSAGE_TYPE_ERROR);
     }
 
+    /**
+     * Returns edit form html
+     * @param $editData array should contain these indexes: id,name,label,default_price
+     */
     private function editFormDisplay($editData)
     {
         ?>
@@ -220,6 +275,10 @@ this.parentNode.parentNode.style.backgroundColor=/^\d+(?:\.\d{1,2})?$/.test(this
         <?php
     }
 
+    /**
+     * Returns delete form html
+     * @param $deleteData array should contain these indexes: id,name
+     */
     private function deleteFormDisplay($deleteData)
     {
         ?>
@@ -243,6 +302,9 @@ this.parentNode.parentNode.style.backgroundColor=/^\d+(?:\.\d{1,2})?$/.test(this
         <?php
     }
 
+    /**
+     * Returns add form html
+     */
     private function addFormDisplay()
     {
         ?>
@@ -275,6 +337,9 @@ this.parentNode.parentNode.style.backgroundColor=/^\d+(?:\.\d{1,2})?$/.test(this
         <?php
     }
 
+    /**
+     * Returns default listing page html
+     */
     private function dataListDisplay()
     {
         $result = $this->getAll();
