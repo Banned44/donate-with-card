@@ -9,7 +9,7 @@ class Donations extends PluginBase
     {
         global $wpdb;
         $this->db = &$wpdb;
-        $this->tableName = $this->db->prefix . "donations";
+        $this->tableName = DONATIONS_TABLE_NAME;
         add_action('admin_menu', array($this, self::PREFIX . "donations_admin_page_menu_reg"));
 //        add_action('admin_init', array($this, self::PREFIX . "style_script_reg_operations"));
     }
