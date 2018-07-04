@@ -18,6 +18,9 @@ if (!defined('ABSPATH')) {
 
 define("DWC_PLUGIN_DIR", plugin_dir_path(__FILE__));
 
+define("DONATION_TYPES_TABLE_NAME", "dwc_donation_types");
+define("DONATIONS_TABLE_NAME", "dwc_donations");
+define("DONATION_ITEMS_TABLE_NAME", "dwc_donation_items");
 
 /**
  * Inserts necessary db tables upon activation
@@ -25,17 +28,14 @@ define("DWC_PLUGIN_DIR", plugin_dir_path(__FILE__));
 function dwc_ddl()
 {
     global $wpdb;
+
     $donationTypesTableSql = null;
     $donationsTableSql = null;
     $donationItemsTableSql = null;
-    $donationTypesTableName = $wpdb->prefix . 'donation-types';
-    $donationsTableName = $wpdb->prefix . 'donations';
-    $donationItemsTableName = $wpdb->prefix . 'donation-items';
 
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-
-    if ($donationTypesTableName != $wpdb->get_var('SHOW TABLES LIKE ' . $donationTypesTableName)) {
-        $donationTypesTableSql = "CREATE TABLE `$donationTypesTableName` (
+    if (DONATION_TYPES_TABLE_NAME != $wpdb->get_var("SHOW TABLES LIKE '" . DONATION_TYPES_TABLE_NAME . "'")) {
+        $donationTypesTableSql = "CREATE TABLE `" . DONATION_TYPES_TABLE_NAME . "` (
       `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id index',
       `name` varchar(50) COLLATE utf8mb4_turkish_ci NOT NULL COMMENT 'Unique donation name',
       `label` varchar(255) COLLATE utf8mb4_turkish_ci DEFAULT NULL COMMENT 'domain label for web display',
@@ -46,8 +46,8 @@ function dwc_ddl()
    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci COMMENT='defines donation types';";
         dbDelta($donationTypesTableSql);
     }
-    if ($donationsTableName != $wpdb->get_var('SHOW TABLES LIKE ' . $donationsTableName)) {
-        $donationsTableSql = "CREATE TABLE `$donationsTableName` (
+    if (DONATIONS_TABLE_NAME != $wpdb->get_var("SHOW TABLES LIKE '" . DONATIONS_TABLE_NAME . "'")) {
+        $donationsTableSql = "CREATE TABLE `" . DONATIONS_TABLE_NAME . "` (
    `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id index',
    `name` varchar(50) COLLATE utf8mb4_turkish_ci NOT NULL COMMENT 'donator''s name',
    `surname` varchar(50) COLLATE utf8mb4_turkish_ci NOT NULL COMMENT 'donator''s surname',
@@ -58,12 +58,12 @@ function dwc_ddl()
    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'donation time',
    `total` decimal(15,2) NOT NULL COMMENT 'total donation amount',
    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci COMMENT='donation that has been made';";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci COMMENT='donations that has been successfully made';";
         dbDelta($donationsTableSql);
     }
 
-    if ($donationItemsTableName != $wpdb->get_var('SHOW TABLES LIKE ' . $donationItemsTableName)) {
-        $donationItemsTableSql = "CREATE TABLE `$donationItemsTableName` (
+    if (DONATION_ITEMS_TABLE_NAME != $wpdb->get_var("SHOW TABLES LIKE '" . DONATION_ITEMS_TABLE_NAME . "'")) {
+        $donationItemsTableSql = "CREATE TABLE `" . DONATION_ITEMS_TABLE_NAME . "` (
    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id index',
    `donation_id` int(11) NOT NULL COMMENT 'donation id that current item belongs to',
    `donation_type_id` int(11) NOT NULL COMMENT 'donation type that current item belongs to',
@@ -74,16 +74,12 @@ function dwc_ddl()
     }
 
     add_option("donate_with_card_db_version", "0.0.1");
-
 }
-
 
 function dwc_dml()
 {
-    $donationTypesTableName = $wpdb->prefix . 'donation-types';
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-
-    $sql = "INSERT INTO `".$donationTypesTableName."` (`id`, `name`, `label`, `default_price`, `ord`) VALUES
+    $sql = "INSERT INTO " . DONATION_TYPES_TABLE_NAME . "(`id`, `name`, `label`, `default_price`, `ord`) VALUES
 (1, 'Hayat Kurtarınca Güzel', 'Hayat Kurtarınca Güzel', '115.00', NULL),
 (2, 'Genel Bağış', 'Genel Bağış', NULL, NULL),
 (3, 'Zekat', 'Zekat', NULL, NULL),
@@ -102,20 +98,17 @@ function dwc_dml()
 
 function dwc_uninstall()
 {
-    $donationTypesTableName = $wpdb->prefix . 'donation-types';
-    $donationsTableName = $wpdb->prefix . 'donations';
-    $donationItemsTableName = $wpdb->prefix . 'donation-items';
-    global $wpdb;
-    $wpdb->query("DROP TABLE IF EXISTS $donationTypesTableName;");
-    $wpdb->query("DROP TABLE IF EXISTS $donationsTableName;");
-    $wpdb->query("DROP TABLE IF EXISTS $donationItemsTableName;");
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta("DROP TABLE " . DONATION_TYPES_TABLE_NAME);
+    dbDelta("DROP TABLE " . DONATION_ITEMS_TABLE_NAME);
+    dbDelta("DROP TABLE " . DONATIONS_TABLE_NAME);
     delete_option('donate_with_card_db_version');
 }
 
 register_activation_hook(__FILE__, "dwc_ddl");
 register_activation_hook(__FILE__, "dwc_dml");
-register_deactivation_hook(__FILE__, "dwc_deactivate");
-register_deactivation_hook(__FILE__, "dwc_uninstall");
+//register_deactivation_hook(__FILE__, "dwc_uninstall");
+register_uninstall_hook(__FILE__, "dwc_uninstall");
 
 require plugin_dir_path(__FILE__) . "admin/PluginBase.php";
 require plugin_dir_path(__FILE__) . "admin/Dt.php";
