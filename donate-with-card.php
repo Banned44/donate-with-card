@@ -57,6 +57,7 @@ function dwc_ddl()
    `donation-notes` text COLLATE utf8mb4_turkish_ci NOT NULL COMMENT 'donator''s custom notes',
    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'donation time',
    `total` decimal(15,2) NOT NULL COMMENT 'total donation amount',
+   `vpos_data` mediumtext null,
    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci COMMENT='donations that has been successfully made';";
         dbDelta($donationsTableSql);
@@ -114,8 +115,11 @@ require plugin_dir_path(__FILE__) . "admin/PluginBase.php";
 require plugin_dir_path(__FILE__) . "admin/Dt.php";
 require plugin_dir_path(__FILE__) . "admin/Donations.php";
 
+
+// Add donation type settings page to the wordpress admin's settings menu
 new Dt();
 
+//
 new Donations();
 
 // MENU STRUCTURE

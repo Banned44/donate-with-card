@@ -201,7 +201,7 @@ $(function () {
         $.post(url, data, callback, 'json');
     }
 
-    //second step forward button actions
+    //second step forward button actionsdwc_donations
     $('#secondStepContinueButton').click(function () {
         if (isReadyForThirdStep() != true) {
             alert("Lütfen bilgilerinizi giriniz.");
@@ -219,11 +219,12 @@ $(function () {
             $('#step3').removeClass("hideStep").addClass("fadeInRight");
             // Credit card beautifier initialization.
             $('form#donation_infos').card({
+                debug: true ,
                 form: 'form#donation_infos',
                 placeholders: {
                     number: 'xxxx xxxx xxxx xxxx',
                     name: labels[5],
-                    expiry: 'xx/xxx',
+                    expiry: 'xx/xx',
                     cvc: 'xxx'
                 },
                 formSelectors: {

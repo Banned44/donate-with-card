@@ -8,6 +8,9 @@ class PluginBase
 {
     const PREFIX = 'dwc_';
 
+    const  DONATION_TYPES_TABLE_NAME = "dwc_donation_types";
+    const  DONATIONS_TABLE_NAME = "dwc_donations";
+    const  DONATION_ITEMS_TABLE_NAME = 'dwc_donation_items';
 
     public function menu_operations()
     {

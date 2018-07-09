@@ -12,10 +12,10 @@ function dwc_donate_form_reg_scripts()
     wp_register_script('blockui-js', plugins_url('donate-with-card/public/assets/js/jquery.blockUI.min.js'), array('jquery'), null, true);
 }
 
-function my_registration_form($params, $content = null)
+function donation_form_display($params, $content = null)
 {
     global $wpdb;
-    $query = "SELECT * FROM `{$wpdb->prefix}donation-types` ";
+    $query = "SELECT * FROM " . DONATION_TYPES_TABLE_NAME;
     $donationTypes = $wpdb->get_results($query, ARRAY_A);
 
     extract(shortcode_atts(array(
@@ -34,7 +34,8 @@ function my_registration_form($params, $content = null)
     return ob_get_clean();
 }
 
-add_shortcode('my_form', 'my_registration_form');
+add_shortcode('bagis_formu', 'donation_form_display');
+
 function dwc_basket_operations()
 {
     // add/delete basket items.
@@ -72,6 +73,7 @@ function dwc_basket_operations()
 add_action('wp_ajax_dwc_basket_operations', 'dwc_basket_operations');
 add_action('wp_ajax_nopriv_dwc_basket_operations', 'dwc_basket_operations');
 
+
 function dwc_donation_post_actions()
 {
     if (!empty($_POST['dwc_donation_nonce'])) {
@@ -92,23 +94,35 @@ function dwc_donation_post_actions()
                 $error = new WP_Error('empty_error', __('Please enter CVC code.', 'dwc-plugin'));
                 wp_die($error->get_error_message(), __('Donation Form Error', 'dwc-plugin'));
             } else {
-                // do vpos actions
-                // if successfull, add it to db and do not forget to destroy the session.
+
+                // wake session to get the donation items and donator infos.
                 if (session_id() == '') {
                     session_start();
                 }
-                $d = new Donations();
-                $donationResult = $d->addSuccessfulDonation($_SESSION);
-                if ($donationResult) {
-                    echo 'OK';
-//                    header("Location: yoururl.php");
-//                    wp_safe_redirect( admin_url( 'your admin url here' ) );
-                    wp_redirect(plugins_url("donate-with-card/public/thanks-for-donating.php"));
-                    die();
-                } else {
-                    echo 'FAIL';
-                }
-                session_destroy();
+
+
+                echo 'postdata';
+                var_dump($_POST);
+                echo '<br>sessiondata';
+                var_dump($_SESSION);
+
+
+//
+//                // do vpos actions
+//                // if successfull, add it to db and do not forget to destroy the session.
+//
+//                $d = new Donations();
+//                $donationResult = $d->addSuccessfulDonation($_SESSION);
+//                if ($donationResult) {
+//                    echo 'OK';
+////                    header("Location: yoururl.php");
+////                    wp_safe_redirect( admin_url( 'your admin url here' ) );
+//                    wp_redirect(plugins_url("donate-with-card/public/thanks-for-donating.php"));
+//                    die();
+//                } else {
+//                    echo 'FAIL';
+//                }
+//                session_destroy();
             }
         }
     }

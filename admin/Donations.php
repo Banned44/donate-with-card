@@ -9,7 +9,7 @@ class Donations extends PluginBase
     {
         global $wpdb;
         $this->db = &$wpdb;
-        $this->tableName = DONATIONS_TABLE_NAME;
+        $this->tableName = 'dwc_donations';
         add_action('admin_menu', array($this, self::PREFIX . "donations_admin_page_menu_reg"));
 //        add_action('admin_init', array($this, self::PREFIX . "style_script_reg_operations"));
     }
@@ -27,7 +27,7 @@ class Donations extends PluginBase
 
     private function getAll()
     {
-        $sql = "SELECT * FROM `" . $this->tableName . "` ORDER BY id DESC";
+        $sql = "SELECT * FROM `" . self::DONATIONS_TABLE_NAME . "` ORDER BY id DESC";
         return $this->db->get_results($sql, ARRAY_A);
     }
 
@@ -103,7 +103,6 @@ class Donations extends PluginBase
             $this->db->query('ROLLBACK');
             return false;
         }
-
     }
 
     private function insertDonationItems($donation_id, $donation_type_id, $amount)
@@ -114,7 +113,7 @@ class Donations extends PluginBase
             'amount' => $amount
         ];
         $result = $this->db->insert(
-            $this->db->prefix . "donation-items",
+            self::DONATION_ITEMS_TABLE_NAME,
             $insertionData,
             ['%d', '%d', '%f']
         );
@@ -138,7 +137,7 @@ class Donations extends PluginBase
             'total' => $total
         ];
         $result = $this->db->insert(
-            $this->tableName,
+            self::DONATIONS_TABLE_NAME,
             $insertionData,
             array('%s', '%s', '%s', '%s', '%s', '%f')
         );
