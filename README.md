@@ -5,7 +5,7 @@ Herkesin kullanabilmesi için MIT Lisanslı olacak şekilde ayarlandı.
 
 ## Kurulum
 İndirdiğiniz zip arşivini /wp-content/plugins/donate-with-card dizini içerisine çıkarın.
-
+İstediğiniz sayfa içerisinde ```[bagis_formu]``` etiketini kullanarak formu ziyaretçilerinize gösterebilirsiniz.
 
 ## Demo
 Demo sayfasına erişmek için [tıklayınız](http://yusufgunduz.com.tr/online-bagis-demo/index.php/2018/07/17/merhaba-dunya/).
