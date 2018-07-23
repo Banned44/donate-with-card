@@ -2,18 +2,18 @@
 
 class VPosPayment
 {
-    private $name;
-    private $cardNo;
-    private $expireMonth;
-    private $expireYear;
-    private $securityCode;
-    private $amount;
+    protected $name;
+    protected $cardNo;
+    protected $expireMonth;
+    protected $expireYear;
+    protected $securityCode;
+    protected $amount;
 
-    private $cardValidateResultRawData;
-    private $cardValidateResultData;
+    protected $cardValidateResultRawData;
+    protected $cardValidateResultData;
 
-    private $validatedCardProvisionResultRawData;
-    private $validatedCardProvisionResultData;
+    protected $validatedCardProvisionResultRawData;
+    protected $validatedCardProvisionResultData;
 
     /**
      * VPosPayment constructor.
@@ -22,7 +22,7 @@ class VPosPayment
     {
         $this->name = $name;
         $this->cardNo = $cardNo;
-        $splittedExpiry = split('/', $expiry);
+        $splittedExpiry = explode('/', $expiry);
         if (is_array($splittedExpiry) && count($splittedExpiry) == 2) {
             $this->expireMonth = trim($splittedExpiry[0]);
             $this->expireYear = trim($splittedExpiry[1]);

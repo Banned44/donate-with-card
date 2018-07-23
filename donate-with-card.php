@@ -1,10 +1,10 @@
 <?php
 /*
-Plugin Name: Donate With Card
+Plugin Name: Online Bağış Wordpress Eklentisi
 Plugin URI: https://github.com/Kambaa/donate-with-card
-description: A plugin to create a page for donating money via credit card
-Version: 0.0.1
-Author: Yusuf Gündüz
+description: Wordpress dernek siteleri için kredi kartı ile bağış yapılabilmeyi sağlayan eklenti.
+Version: 0.1.1
+Author: Yusuf Gündüz <yusuf.gunduz@gmail.com>
 Author URI: http://www.yusufgunduz.com.tr
 License: GPL3
 Text Domain: dwc-plugin
@@ -17,10 +17,18 @@ if (!defined('ABSPATH')) {
 }
 
 define("DWC_PLUGIN_DIR", plugin_dir_path(__FILE__));
-
 define("DONATION_TYPES_TABLE_NAME", "dwc_donation_types");
 define("DONATIONS_TABLE_NAME", "dwc_donations");
 define("DONATION_ITEMS_TABLE_NAME", "dwc_donation_items");
+define('DWC_BANK_RETURN_URL', admin_url('admin-post.php?action=vpos_return', 'http'));
+define("DWC_OPTION_NAME_VERSION", "donate_with_card_version");
+define("DWC_OPTION_NAME_VPOS_CUSTOMER_ID", "dwc_option_kuveytTurk_customerId");
+define("DWC_OPTION_NAME_VPOS_MERCHANT_ID", "dwc_option_kuveytTurk_merchantId");
+define("DWC_OPTION_NAME_VPOS_USERNAME", "dwc_option_kuveytTurk_username");
+define("DWC_OPTION_NAME_VPOS_PASSWORD", "dwc_option_kuveytTurk_password");
+define("DWC_OPTION_NAME_VPOS_CARDVALIDATIONURL", "dwc_option_kuveytTurk_cardValidationUrl");
+define("DWC_OPTION_NAME_VPOS_CARPROVISIONURL", "dwc_option_kuveytTurk_cardProvisionUrl");
+define("DWC_OPTION_NAME_KURBAN_VEKIL_TAYIN", "kurbanVekilTayin");
 
 /**
  * Inserts necessary db tables upon activation
@@ -53,8 +61,8 @@ function dwc_ddl()
    `surname` varchar(50) COLLATE utf8mb4_turkish_ci NOT NULL COMMENT 'donator''s surname',
    `email` varchar(255) COLLATE utf8mb4_turkish_ci NOT NULL COMMENT 'donator''s email address',
    `phone` varchar(50) COLLATE utf8mb4_turkish_ci NOT NULL COMMENT 'donator''s phone number',
-   `trid` varchar(11) COLLATE utf8mb4_turkish_ci NOT NULL COMMENT 'donator''s Turkish Identification Number (TCKN)',
-   `donation-notes` text COLLATE utf8mb4_turkish_ci NOT NULL COMMENT 'donator''s custom notes',
+   `donation_notes` text COLLATE utf8mb4_turkish_ci NOT NULL COMMENT 'donator''s custom notes',
+   `provision_result` text COLLATE utf8mb4_turkish_ci NOT NULL COMMENT 'card provision result data',
    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'donation time',
    `total` decimal(15,2) NOT NULL COMMENT 'total donation amount',
    `vpos_data` mediumtext null,
@@ -74,26 +82,20 @@ function dwc_ddl()
         dbDelta($donationItemsTableSql);
     }
 
-    add_option("donate_with_card_db_version", "0.0.1");
+    add_option(DWC_OPTION_NAME_VERSION, "0.1.1");
+    add_option(DWC_OPTION_NAME_VPOS_CUSTOMER_ID, "400235");
+    add_option(DWC_OPTION_NAME_VPOS_MERCHANT_ID, "496");
+    add_option(DWC_OPTION_NAME_VPOS_USERNAME, "apiuser10");
+    add_option(DWC_OPTION_NAME_VPOS_PASSWORD, "123456");
+    add_option(DWC_OPTION_NAME_VPOS_CARDVALIDATIONURL, "https://boatest.kuveytturk.com.tr/boa.virtualpos.services/Home/ThreeDModelPayGate");
+    add_option(DWC_OPTION_NAME_VPOS_CARPROVISIONURL, "https://boatest.kuveytturk.com.tr/boa.virtualpos.services/Home/ThreeDModelProvisionGate");
 }
 
 function dwc_dml()
 {
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     $sql = "INSERT INTO " . DONATION_TYPES_TABLE_NAME . "(`id`, `name`, `label`, `default_price`, `ord`) VALUES
-(1, 'Hayat Kurtarınca Güzel', 'Hayat Kurtarınca Güzel', '115.00', NULL),
-(2, 'Genel Bağış', 'Genel Bağış', NULL, NULL),
-(3, 'Zekat', 'Zekat', NULL, NULL),
-(4, 'Suriye Krizi', 'Suriye Krizi', NULL, NULL),
-(5, 'Yemen Krizi', 'Yemen Krizi', NULL, NULL),
-(6, 'Arakan Krizi', 'Arakan Krizi', NULL, NULL),
-(7, 'Tedavi Programları', 'Tedavi Programları', NULL, NULL),
-(8, 'Koruyucu Sağlık Programları', 'Koruyucu Sağlık Programları', NULL, NULL),
-(9, 'Sağlık Eğitimleri', 'Sağlık Eğitimleri', NULL, NULL),
-(10, 'Gözlerini Aç!', 'Gözlerini Aç!', '300.00', NULL),
-(11, 'Açlıktan Ölüyorum! Gerçekten...', 'Açlıktan Ölüyorum! Gerçekten...', '145.00', NULL),
-(12, 'Bizim İçin Su Onlar İçin Hayat', 'Bizim İçin Su Onlar İçin Hayat', NULL, NULL),
-(13, 'Kurban Olsun Sağlık Olsun', 'Kurban Olsun Sağlık Olsun', '430.00', NULL);";
+(1, 'Test_donation', 'Deneme Bağış', '1.00', NULL);";
     dbDelta($sql);
 }
 
@@ -103,42 +105,35 @@ function dwc_uninstall()
     dbDelta("DROP TABLE " . DONATION_TYPES_TABLE_NAME);
     dbDelta("DROP TABLE " . DONATION_ITEMS_TABLE_NAME);
     dbDelta("DROP TABLE " . DONATIONS_TABLE_NAME);
-    delete_option('donate_with_card_db_version');
+    delete_option(DWC_OPTION_NAME_VERSION);
+    delete_option(DWC_OPTION_NAME_VPOS_CUSTOMER_ID);
+    delete_option(DWC_OPTION_NAME_VPOS_MERCHANT_ID);
+    delete_option(DWC_OPTION_NAME_VPOS_USERNAME);
+    delete_option(DWC_OPTION_NAME_VPOS_PASSWORD);
+    delete_option(DWC_OPTION_NAME_VPOS_CARDVALIDATIONURL);
+    delete_option(DWC_OPTION_NAME_VPOS_CARPROVISIONURL);
 }
 
 register_activation_hook(__FILE__, "dwc_ddl");
 register_activation_hook(__FILE__, "dwc_dml");
-//register_deactivation_hook(__FILE__, "dwc_uninstall");
 register_uninstall_hook(__FILE__, "dwc_uninstall");
 
 require plugin_dir_path(__FILE__) . "admin/PluginBase.php";
 require plugin_dir_path(__FILE__) . "admin/Dt.php";
 require plugin_dir_path(__FILE__) . "admin/Donations.php";
-
+require plugin_dir_path(__FILE__) . "admin/VPosPayment.php";
+require plugin_dir_path(__FILE__) . "admin/KuveytTurkVPosPayment.php";
 
 // Add donation type settings page to the wordpress admin's settings menu
 new Dt();
 
-//
 new Donations();
 
-// MENU STRUCTURE
-// DonateWithCard
-//    - Donations
-//    - Options
-//         - Donation Types
-//         - VPos Settings
-//         - Misc
-//
-
-
-function my_plugin_load_plugin_textdomain()
+function dwc_load_plugin_textdomain()
 {
     load_plugin_textdomain('dwc-plugin', false, dirname(plugin_basename(__FILE__)) . '/languages/');
 }
 
-add_action('plugins_loaded', 'my_plugin_load_plugin_textdomain');
+add_action('plugins_loaded', 'dwc_load_plugin_textdomain');
 
 require_once 'public/donate-form.php';
-
-?>

@@ -177,7 +177,7 @@ $(function () {
 
     // checks if donator infos are correctly entered
     function isReadyForThirdStep() {
-        var infoFieldIds = ["name", "tel", "email", "tckn"];
+        var infoFieldIds = ["name", "tel"];
         for (var i in infoFieldIds) {
             if ("" === $("#" + infoFieldIds[i]).val()) {
                 return false;
@@ -212,14 +212,13 @@ $(function () {
         data.name = $('#name').val();
         data.tel = $('#tel').val();
         data.email = $('#email').val();
-        data.tckn = $('#tckn').val();
         data.donation_notes = $('#donation_notes').val();
         saveDonatorInfos(data, function () {
             $('#step2').addClass("hideStep");
             $('#step3').removeClass("hideStep").addClass("fadeInRight");
             // Credit card beautifier initialization.
             $('form#donation_infos').card({
-                debug: true ,
+                debug: true,
                 form: 'form#donation_infos',
                 placeholders: {
                     number: 'xxxx xxxx xxxx xxxx',
@@ -233,7 +232,7 @@ $(function () {
                     cvcInput: 'input#card_cvc',
                     nameInput: 'input#cardholder_name'
                 },
-                container: '.card-wrapper'
+                container: '.card-wrapper',
                 // masks: {
                 //     cardNumber: '•' // optional - mask card number
                 // },
@@ -248,7 +247,20 @@ $(function () {
     });
 
     $('#thirdButtonContinueButton').click(function () {
-        $('#donation_infos').submit();
+
+        var isReady = true;
+        var infoFieldIds = ["cardholder_name", "card_number", "card_expiry", "card_cvc"];
+        for (var i in infoFieldIds) {
+            if ("" === $("#" + infoFieldIds[i]).val()) {
+                isReady = false;
+            }
+        }
+        if (!isReady) {
+            alert("Lütfen kart bilgilerinizi giriniz.");
+            return false;
+        } else {
+            $('#donation_infos').submit();
+        }
     });
 
 });
