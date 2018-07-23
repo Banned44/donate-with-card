@@ -233,9 +233,12 @@ $(function () {
                     nameInput: 'input#cardholder_name'
                 },
                 container: '.card-wrapper',
-                // masks: {
-                //     cardNumber: '•' // optional - mask card number
-                // },
+                masks: {
+                    number: '*',
+                    name: "*",
+                    expiry: '** / **',
+                    cvc: '***'
+                },
             });
         });
     });

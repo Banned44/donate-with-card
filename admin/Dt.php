@@ -104,7 +104,6 @@ class Dt extends PluginBase
                     update_option(DWC_OPTION_NAME_VPOS_PASSWORD, $_POST['vposPassword']);
                     update_option(DWC_OPTION_NAME_VPOS_CARDVALIDATIONURL, $_POST['vposValidationUrl']);
                     update_option(DWC_OPTION_NAME_VPOS_CARPROVISIONURL, $_POST['vposProvisionUrl']);
-                    update_option(DWC_OPTION_NAME_KURBAN_VEKIL_TAYIN, $_POST['kurbanVekilTayin']);
                     $this->resultDisplay(__("İşlem Başaılı!", 'dwc-plugin'), __("Sanal pos ayarları başarıyla kaydedildi.", 'dwc-plugin'));
 
                     break;
@@ -439,14 +438,6 @@ this.parentNode.parentNode.style.backgroundColor=/^\d+(?:\.\d{1,2})?$/.test(this
                         <td><input type="text" name="vposProvisionUrl"
                                    value="<?php echo get_option(DWC_OPTION_NAME_VPOS_CARPROVISIONURL); ?>"/></td>
                     </tr>
-
-                    <tr>
-                        <th><?php _e("Kurban Vekil Tayin Mesajı", 'dwc-plugin'); ?></th>
-                        <td><input type="text" name="kurbanVekilTayin"
-                                   value="<?php echo stripslashes(get_option(DWC_OPTION_NAME_KURBAN_VEKIL_TAYIN)); ?>"/></td>
-                    </tr>
-
-
                     <tr>
                         <td colspan="2">
                             <input type="hidden" name="action" value="saveVposSettings"/>
