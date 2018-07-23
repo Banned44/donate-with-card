@@ -197,18 +197,18 @@
             <div class='card-wrapper'></div>
             <div class="h10"></div>
             <input type="text" id="cardholder_name" name="cardholder_name"
-                   placeholder="<?php _e("Kart Sahibi Adı", "dwc-plugin"); ?>" class="input" value="Test Kart"/>
+                   placeholder="<?php _e("Kart Sahibi Adı", "dwc-plugin"); ?>" class="input"/>
             <div class="h10"></div>
             <input type="text" id="card_number" name="card_number"
-                   placeholder="<?php _e("Kart Numarası", "dwc-plugin"); ?>" value="5188 9600 0004 3719" class="input"/>
+                   placeholder="<?php _e("Kart Numarası", "dwc-plugin"); ?>"  class="input"/>
             <div class="h10"></div>
 
             <div class="card_expiry fleft">
-                <input type="text" id="card_expiry" name="card_expiry" value="11 / 20" 
+                <input type="text" id="card_expiry" name="card_expiry"
                        placeholder="MM/YY" class="input" style="width: 95%;"/>
             </div>
             <div class="card_expiry fright">
-                <input type="text" id="card_cvc" name="card_cvc" value="383" 
+                <input type="text" id="card_cvc" name="card_cvc"
                        placeholder="CVC2" class="input" style="width: 95%;"/>
             </div>
 
