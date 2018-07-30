@@ -4,7 +4,7 @@ Dernek siteleri için düşünülmüş, kredi kartı ile bağış yapabilmeyi sa
 Herkesin kullanabilmesi için MIT Lisanslı olacak şekilde ayarlandı. 
 
 ## Kurulum
-İndirdiğiniz zip arşivini /wp-content/plugins/donate-with-card dizini içerisine çıkarın.
+Proje içerisindeki ```donate-with-card``` klasörünü /wp-content/plugins/donate-with-card dizini olacak şekilde çıkarın.
 İstediğiniz sayfa içerisinde ```[bagis_formu]``` etiketini kullanarak formu ziyaretçilerinize gösterebilirsiniz.
 
 ## Demo
